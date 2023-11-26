@@ -1,0 +1,29 @@
+net
+-------
+
+Two important data structures of Linux Kernel network layer are:
+
+	sk_buff 
+
+	net_device
+	
+
+sk_buff or skb
+---------------
+
+	sk_buff means socket buffers. 
+
+	Every packet sent or received is handled using this data structure
+
+	 Packet received by the network card into put into a sk_buff and then passed to the network stack, which uses the skbuff all the time.
+
+net_device
+----------
+	Structure representing a network device
+
+Functions
+------------
+	Once the packet is received by the interrupt handler, it copies into skb and calls netif_rx
+	netdev_start_xmit is the place where transmission happens: xmit_one in net/dev/core.c file
+	
+

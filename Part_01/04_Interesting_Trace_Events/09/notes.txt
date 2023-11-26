@@ -1,0 +1,27 @@
+IRQ
+-----
+
+# ls events/irq
+
+Each interrupt handler has a struct irqaction. As multiple devices can share a single irq, there will be multple irqaction and each irqaction refers to a specific hardware device and its interrupt handler
+
+irq_handler_entry:
+	called immediately before the irq action handler
+	prints contains various information about the handler such as device name and device id
+
+irq_handler_exit:
+	called immediately after the irq action handler returns
+	irq_handler_exit can be used in conjuction with irq_handler_entry to find out interrupt latencies
+
+softirq_entry:
+	called immediately before the softirq handler
+
+softirq_exit:
+	called immediately after the softirq handler returns
+
+softirq_raise:
+	called immediately when a softirq is raised
+
+Try: Filtering by irq number and soft irq vectors
+
+

@@ -1,0 +1,54 @@
+trace-cmd record
+-----------------
+
+# trace-cmd record [options] [command]
+
+trace-cmd record accepts the same command as trace-cmd start. But it has more functionality. It
+
+	will set up the Ftrace Linux Kernel tracer to record the specified (plugin or event)
+	creates a number of tracing processes (one per CPU) that will record from the kernel ring buffer straight into temporary files.
+	combines all the files into trace.dat file
+
+trace-cmd record with or without a user command. If no command is specified, it will record until CTRL+C is pressed.
+
+# trace-cmd record -p function
+# trace-cmd record -p function_graph
+# trace-cmd record -p function ls
+
+Buffers of ftrace are per-cpu.
+trace-cmd uses per_cpu/cpuX/trace_pipe_raw file
+Reads the binary data directly from the ring buffer.
+
+-F:
+        This will filter only the executable that is given on the command line
+        Using -F will let you trace only events that are caused by the given command
+
+# trace-cmd record -F -p function ls
+
+trace-cmd report
+----------------
+
+Output a human readable report of a trace created by a trace-cmd record
+
+# trace-cmd report
+
+To get the list of events
+# trace-cmd report --events
+
+To get only functions
+# trace-cmd report -f
+
+
+-k option of record:
+-------------------
+        By default, when trace-cmd is finished tracing, it will reset the buffers and disable all the tracing that it enabled
+        This option keeps trace-cmd from disabling the tracer and reseting the buffer.
+
+Example
+----------
+
+# trace-cmd record -p function -l do_page_fault
+
+# trace-cmd report
+
+

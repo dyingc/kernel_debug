@@ -1,0 +1,26 @@
+Finding latencies at kernel startup
+-----------------------------------
+
+Kernel provides many command-line parameters for ftrace
+
+	ftrace = [tracer] : This will set and start the tracer as early as possible in boot
+	ftrace_filter=[function_list]: Function-list is a comma-separated list of functions. Traces only the functions present in the filter at boot.
+	ftrace_graph_filter=[function_list]: Limits the top level callers functions traced by function graph tracer
+	ftrace_notrace, ftrace_graph_notrace=[function_list]: Opposite of ftrace_filter, and ftrace_graph_filter. Will not trace the functions listed in this parameter.
+	ftrace_graph_max_depth=<uint>: Used along with function graph tracer. This is max depth it will trace into the function
+	tracing_thresh=<uint>: Will trace only the functions taking longer than passed values.
+
+Example1:
+-----------
+
+ftrace=function_graph ftrace_graph_max_depth=1
+
+This tells the kernel to start 'function_graph' tracer on start and maximum depth of tracing into function is 1.
+
+Example2:
+-----------
+
+ftrace=function_graph tracing_thresh=200
+this traces all functions taking longer than 200 microseconds (.2 ms). You can use any duration threshhold you want.
+
+Note: the tracer starts sometime during initialization, and you only get timings after it starts

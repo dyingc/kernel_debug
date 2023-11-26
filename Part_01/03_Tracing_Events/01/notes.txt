@@ -1,0 +1,46 @@
+Tracing Events
+------------------
+
+Function tracing is great but
+        it doesn't show much data besides the functions being called
+        no parameters or variables can be seen
+
+Trace events
+--------------
+
+Trace events are built on top of something called tracepoints
+
+What are tracepoints
+---------------------
+
+Tracepoints are hooks that are inserted into points of code of interest and call a certain function of your choice (also known as function probe)
+
+A tracepoint can be "on" or "off"
+
+When tracepoint is off
+	it has no effect, except for adding a tiny time penalty and space penalty
+
+When tracepoint is on
+	 the function you provide is called each time the tracepoint is executed
+	 When the function provided ends its execution, it returns to the caller
+
+Unlike ftracer, trace point can record local variables of the function
+
+Kernel uses TRACE_EVENT macro for adding tracepoints and trace_* (trace_sched_switch)
+
+TRACE_EVENT macro
+-------------------
+
+Creates a tracepoint that can be placed in the kernel code.
+
+Creates a callback function that can be hooked to this tracepoint.
+
+Callback function records the data passed to it into the tracer ring buffer
+
+Create a function that parses the data recorded to the ring buffer and translate it to a human readable format that the tracer can display to a user.
+
+Conclusion
+------------
+Events are tracepoints added by developers to monitor kernel subsystems like the scheduler, power management, interrupts, networking, gpio etc
+
+

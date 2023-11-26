@@ -1,0 +1,58 @@
+Filtering Events
+------------------
+
+Filtering events is done by writing a filter to the filter file
+
+Filters can be set on each parameter listed in the format file, whether it is a numeric or string
+
+How it works?
+----------------
+
+As soon as an event is logged into the trace buffer, its fields are checked against the filter expression associated with that event type
+
+An event with field values that ‘match’ the filter will appear in the trace output
+
+An event whose values don’t match will be discarded
+
+An event with no filter associated with it matches everything, and is the default when no filter has been set for an event.
+
+Filter Expressions
+--------------------
+A filter expression consists of one or more ‘predicates’ that can be combined using the logical operators ‘&&’ and ‘||’
+
+Predicate: a clause that compares the value of a field contained within a logged event with a constant value and returns either 0 or 1
+
+Return value depends on whether the field value matched (1) or didn’t match (0)
+
+Syntax of predicate: field-name relational-operator value
+
+Parentheses can be used to provide arbitrary logical groupings and double-quotes can be used to prevent the shell from interpreting operators as shell metacharacters.
+
+The field-names available for use in filters can be found in the ‘format’ files for trace events
+
+The relational-operators depend on the type of the field being tested:
+
+Numeric Fields: ==, !=, <, <=, >, >=, &
+
+String Fields: ==, !=, ~
+
+The glob (~) accepts a wild card character (*,?) and character classes ([)
+
+Example 1:
+-----------
+
+# echo 'prev_comm == "bash" && prev_state & 0x02' > events/sched/sched_switch/filter
+# echo 1 > events/sched/sched_switch/enable
+# echo > trace
+# cat trace
+
+0x02 means D state. It's blocked on something
+
+Clearing filters 
+-------------------
+
+To clear the filter for an event, write a ‘0’ to the event’s filter file.
+
+To clear the filters for all events in a subsystem, write a ‘0’ to the subsystem’s filter file.
+
+

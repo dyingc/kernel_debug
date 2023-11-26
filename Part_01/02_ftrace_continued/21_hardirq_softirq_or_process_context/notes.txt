@@ -1,0 +1,52 @@
+Flags
+------------
+
+# tracer: nop
+#
+# entries-in-buffer/entries-written: 79/79   #P:6
+#
+#                              _-----=> irqs-off
+#                             / _----=> need-resched
+#                            | / _---=> hardirq/softirq
+#                            || / _--=> preempt-depth
+#                            ||| /     delay
+
+
+hardirq/softirq:
+-----------------
+
+	'Z' - NMI occurred inside a hardirq
+	'z' - NMI is running
+	'H' - hard irq occurred inside a softirq.
+	'h' - hard irq is running
+	's' - soft irq is running
+	'.' - normal context.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

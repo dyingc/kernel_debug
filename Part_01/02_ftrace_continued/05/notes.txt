@@ -1,0 +1,33 @@
+Start tracing on a particular function
+--------------------------------------
+
+We know 'tracing_on' file is used to disable/enable writing the traces on the ring buffer.
+
+# echo '0' > tracing_on //to disable tracing
+# echo '1' > tracing_on // to enable tracing
+
+ftrace also provides functionality to start tracing on a particular function call execution or stop tracing on a particular function execution.
+
+Syntax: function:command[:count]
+
+The command will be executed on the start of the function. The value of command can be
+	"traceon" to start the trace
+	"traceoff" to stop the trace
+	"stacktrace"
+
+The count is optional, specifies the number of times the command should be executed.
+If there is no count specified, the command will be executed each time the function is called
+
+# echo 'nop' > current_tracer
+# echo 'ksys_read:traceoff:1' > set_ftrace_filter
+# cat set_ftrace_filter
+# echo 'function' > current_tracer
+
+How to remove this?
+-------------------
+
+Using '!' operator
+
+# echo '!ksys_read:traceoff' > set_ftrace_filter
+
+

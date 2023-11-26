@@ -1,0 +1,76 @@
+Tracing Events
+------------------
+
+The list of events can be viewed by running the command
+
+# cd /sys/kernel/tracing
+# cat available_events
+
+A long list will be printed out in the console.
+This is a bit inconvenient. We can print out a more structured listed using the command:
+
+# ls /sys/kernel/tracing/events
+
+Events are grouped by sub system
+        - sched - schedule events
+        - irq   - interrupt events
+        - net   - networking events
+        - syscalls      - system call events (all system calls and their parameters)
+        - module        - module loading, unloading, freeing etc
+        - kvm   - events for the KVM guests
+        - exceptions - page faults
+        - cgroup -      changes to cgroups
+        - And many more
+
+
+Each sub system has several events
+For example: The "sched" system
+
+        sched_switch
+        sched_waking
+        sched_process_fork
+        sched_process_exit
+        sched_process_exec
+        sched_migrate_task
+        etc
+
+# ls events/sched
+
+How to enable events?
+-----------------------
+Using enable file
+
+# echo nop > current_tracer
+# echo 1 > events/sched/sched_waking/enable
+# echo 1 > events/sched/sched_switch/enable
+# cat trace
+
+Enabling Group of Events
+-----------------------
+If you want to enable group of events, for example enable all sched events
+
+# echo nop > current_tracer
+# echo 1 > events/sched/enable
+# cat trace
+
+# echo 1 > events/irq/enable
+# echo 1 > events/timer/enable
+
+Enabling All Events
+---------------------
+
+# echo 1 > events/enable
+# cat trace
+
+You can do the other way as well, enable all the events and disable the events that you don't want by writing 0 in the enable file
+
+Enable file
+-----------
+
+When reading one of these enable files, there are four results:
+
+0 - all events this file affects are disabled
+1 - all events this file affects are enabled
+X - there is a mixture of events enabled and disabled
+? - this file does not affect any event
+
