@@ -1,4 +1,0 @@
-Can i change the format  of an event?
---------------------------------------
-
-As of now, there is no such functionality available. The file is read-only

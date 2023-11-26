@@ -1,7 +1,0 @@
-Exception Events
-------------------
-
-A page fault occurs when a program attempts to access data or code that is in its address space, but is not currently located in the system RAM
-
-page_fault_user and page_fault_kernel:
-	called from do_page_fault in arch/x86/mm/fault.c

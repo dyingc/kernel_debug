@@ -1,6 +1,0 @@
-Events on Beaglebone
---------------------
-
-regmap
-i2c
-gpio

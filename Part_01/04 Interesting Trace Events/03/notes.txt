@@ -1,6 +1,0 @@
-USB Events
-----------
-
-/sys/kernel/debug/tracing/events/xhci-hcd
-
-Connect and Disconnect a USB Drive

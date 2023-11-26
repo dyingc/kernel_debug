@@ -1,7 +1,0 @@
-Does available_filter_functions file show only exported symbols or all kernel symbols?
-Answer: Every function which is present in kallsysms, which is basically every single function
-
-
-What happens if there are two functions with same function name?
-Answer: It will enable both of them.
-
