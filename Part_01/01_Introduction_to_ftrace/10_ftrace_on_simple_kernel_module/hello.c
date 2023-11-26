@@ -18,6 +18,12 @@ static struct cdev mycdev;
 
 MODULE_LICENSE("GPL");
 
+static int _dyingc_test(struct file *, int, struct file_lock *);
+static int _dyingc_test(struct file * f, int i, struct file_lock * l) {
+	pr_info("%s\n", __func__);
+    return 0;
+}
+
 static int device_open(struct inode *inode, struct file *file)
 {
 	pr_info("%s\n", __func__);
@@ -53,7 +59,8 @@ struct file_operations device_fops = {
 	.read = device_read,
 	.write = device_write,
 	.open = device_open,
-	.release = device_release
+	.release = device_release,
+    .lock = _dyingc_test
 };
 
 
