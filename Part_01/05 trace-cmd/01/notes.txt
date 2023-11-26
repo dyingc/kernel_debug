@@ -1,0 +1,23 @@
+trace-cmd
+-------------
+
+ftrace/tracefs is a tool for everyone with Busybox
+
+Everything we did so far used echo or cat. Which makes using ftrace extremely simple on limited systems
+
+But can be very tedious as there are lot of things to remember (what file does for what)
+
+trace-cmd
+---------
+
+trace-cmd is a command line tool that interacts with the tracefs (ftrace interface)
+
+With trace-cmd, there is no need to worry about tracefs, it mounts the tracefs automatically
+
+Note: You need to run this command as root
+
+$ sudo apt install trace-cmd
+
+It supports bash completion as well
+
+$ man trace-cmd 

@@ -1,0 +1,39 @@
+trace options
+----------------
+
+Modifies the way tracers may work
+
+Modifies output format
+
+Some tracers have their own options
+
+Two ways to modify the options
+
+- file trace_options
+
+        shows only global or current tracer options
+
+        to enable echo option_name > trace_options
+
+        to disable echo nooption_name > trace_options
+
+# cat trace_options
+
+There are 27 options available for the user to control
+
+The words which begin with "no" represents trace options that are disabled.
+
+Let's try few options
+---------------------
+
+1. sym-offset: Enabling this option, you will see function name plus offset in the function. By default, this is disabled.
+
+2. print-parent: This option displays the calling function. By default, this option is disabled.
+
+3. function-fork: This option enables tracing the children when set_ftrace_pid is set.
+
+4. irq-info: Displays the interrupt, preempt count, need resched data information in the trace
+
+5. context-info: Disabling this option, will hide the Task-PID, CPU, Timestamp and other useful information.
+
+

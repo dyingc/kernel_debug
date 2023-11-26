@@ -1,0 +1,10 @@
+Magic Sysrq
+------------
+
+Consider a scenario, where you have sent "continue" command in gdb to target machine,  now you need to connect to the debugger(gdb).  There is no way now, you can achieve it from development machine/host machine.
+
+With the help of magic sysrq sequence, the target machine can enter debugger mode
+
+To use this feature, your kernel should be compiled with CONFIG_MAGIC_SYSRQ feature
+
+# echo 'g' > /proc/sysrq-trigger

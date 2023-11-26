@@ -1,0 +1,73 @@
+Flags
+------------
+
+# tracer: nop
+#
+# entries-in-buffer/entries-written: 79/79   #P:6
+#
+#                              _-----=> irqs-off
+#                             / _----=> need-resched
+#                            | / _---=> hardirq/softirq
+#                            || / _--=> preempt-depth
+#                            ||| /     delay
+
+
+need-resched:
+------------
+	'N' both TIF_NEED_RESCHED and PREEMPT_NEED_RESCHED is set,
+	'n' only TIF_NEED_RESCHED is set,
+	'p' only PREEMPT_NEED_RESCHED is set,
+	'.' otherwise.
+Preemption
+----------
+Preemption is the process of forecefully grabbing CPU from a user or kernel context and giving it to someone else
+
+How it works?
+-------------
+	A timer interrupt (also called tick) interrupts the task/process that is running and
+	makes a decision whether a task running in user space or a kernel code path (executing on behalf of syscall) is to be preempted
+
+How decision is made?
+---------------------
+	This decision is based on whether
+		the task has been running long-enough and something high priority woke up now and needs CPU
+
+Kernel function which handles this is scheduler_tick()
+	In this function, decision is made that the process ran long enough based on its runtime
+	If yes, sets the TIF_NEED_RESCHED for the current task
+
+Even though this flag is set at this point, the task is not going to be preempted yet.
+This is because preemption happens at specific points such as exit of interrupts
+
+PREEMPT_NEED_RESCHED
+---------------------
+In x86 architectures a PREEMPT_NEED_RESCHED bit is also used in preempt_count, for optimization of deciding to reschedule.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

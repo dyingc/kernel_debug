@@ -1,0 +1,41 @@
+Kernel Debugging with GDB
+--------------------------
+
+It is three steps to debug the Linux Kernel with GDB:
+        1. Compile the kernel with KGDB Support
+        2. Configure the Linux kernel on the target to run in debug mode
+        3. Use the GDB client to connect to the target via serial or network
+
+
+Kernel Configuration
+--------------------
+
+$ wget https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.4.85.tar.xz
+
+$ tar xvf linux-5.4.85.tar.xz
+
+$ cd linux-5.4.85
+
+$ sudo apt install build-essential dkms flex bison
+
+$ make oldconfig
+
+$ make nconfig
+
+CONFIG_KGDB : Kernel hacking->Kernel debugging and select KGDB: kernel debugger
+CONFIG_KGDB_SERIAL_CONSOLE
+CONFIG_DEBUG_INFO: Compile the kernel with debug info
+
+Optional:
+CONFIG_FRAME_POINTER – Yes - - Allows you to more accurately construct stack back traces while debugging the kernel
+CONFIG_DEBUG_RODATA  - No - If the architecture supports this option, you should consider turning this off, as this prevents the use of software breakpoints because it marks the certain regions of the kernel memory space as read-only. Or you can use hardware break points in gdb, if you still want this option to be enabled.
+
+$ sudo apt install libssl-dev libelf-dev
+
+$ make
+
+$ make modules_install
+
+$ make install
+
+Copy the linux build folder to development machine

@@ -1,0 +1,13 @@
+Out of Memory Error
+-------------------
+When the running processes require more memory than physically available,
+Linux Kernel employs the OOM Killer to review all running processes and kill one or more of them in order to free up system memory and keep the system running
+
+(gdb) break oom_kill_process
+
+How to generate OOM?
+-----------------------
+
+$ apt install stress
+
+$ stress --vm-bytes 3000M -m 5

@@ -1,0 +1,3 @@
+Does available_filter_functions file show only exported symbols or all kernel symbols?
+
+What happens if there are two functions with same function name?

@@ -1,0 +1,34 @@
+Starting and Stopping the trace
+--------------------------------
+
+Suppose you only want to trace what is happening when you run a specific test, you can use tracing_on file
+
+The file tracing_on is used to disable the ring buffer from recording data
+
+Its a file, on/off switch. To make the ring buffer writeable or not
+
+[tracing]# echo 0 > tracing_on
+
+Everything else still happens with the tracers and they will still incur most of their overhead.
+
+They do notice that the ring buffer is not recording and will not attempt to write any data, but the calls that the tracers make are still performed.
+
+To re-enable the ring buffer, simply write a '1' into that file:
+
+[tracing]# echo 1 > tracing_on
+
+A common run might be:
+
+    [tracing]# echo 0 > tracing_on
+    [tracing]# echo function_graph > current_tracer
+    [tracing]# echo 1 > tracing_on; run_test; echo 0 > tracing_on
+
+The first line disables the ring buffer from recording any data.
+
+The next enables the function graph tracer.
+
+The overhead of the function graph tracer is still present but nothing will be recorded into the trace buffer. The last line enables the ring buffer, runs the test program, then disables the ring buffer.
+
+This narrows the data stored by the function graph tracer to include mostly just the data accumulated by the run_test program.
+
+

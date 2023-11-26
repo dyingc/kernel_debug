@@ -1,0 +1,23 @@
+Setting filters - More examples
+--------------------------------
+
+A filter for an individual event is set by writing a filter expression to the ‘filter’ file for the given event
+
+# cd /sys/kernel/debug/tracing/events/sched/sched_wakeup
+# echo "common_pid == 0" > filter
+
+A slightly more involved example:
+signal_generate 
+signal_deliver
+
+# cd /sys/kernel/debug/tracing/events/signal/signal_generate
+# echo "((sig >= 10 && sig < 15) || sig == 17) && comm != bash" > filter
+
+If there is an error in the expression, you’ll get an ‘Invalid argument’ error when setting it
+the erroneous string along with an error message can be seen by looking at the filter
+
+# cd /sys/kernel/debug/tracing/events/signal/signal_generate
+# echo "((sig >= 10 && sig < 15) || dsig == 17) && comm != bash" > filter
+# cat filter
+
+

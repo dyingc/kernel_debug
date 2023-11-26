@@ -1,0 +1,10 @@
+Debugging a kernel module init section
+----------------------------------------
+
+To debug the kernel module init section, set a kernel breakpoint in the file kernel/module.c at the place where the kernel calls the module's init function ((do_one_initcall(mod->init)))
+
+Inspect kernel variables' values and find the load address for init section and provide it to the debugger in the add-symbol-file command
+
+Thereafter you should then be able to set a breakpoint in the module's init function.
+
+

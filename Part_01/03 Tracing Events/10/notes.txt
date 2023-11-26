@@ -1,0 +1,6 @@
+PID filtering
+-----------------
+
+set_event_pid file traces events from task with a PID listed in this file
+
+# echo $$ > set_event_pid

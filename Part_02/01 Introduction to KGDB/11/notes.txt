@@ -1,0 +1,7 @@
+Breakpoints on a particular line
+---------------------------------
+
+Syntax: break [filename]:[linenumber]
+
+Eg. b fs/namei.c:3825
+

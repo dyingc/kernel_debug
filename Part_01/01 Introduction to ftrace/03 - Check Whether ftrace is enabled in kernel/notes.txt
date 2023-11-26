@@ -1,0 +1,36 @@
+Ftrace
+---------
+
+Enabled in most distros by default
+
+Activated by Kernel Hacking -> Tracers
+
+Minimum kernel configuration required for ftrace
+-------------------------------------------------
+CONFIG_FTRACE --> "Tracers"
+CONFIG_FUNCTION_TRACER --> Kernel Function Tracer
+CONFIG_FUNCTION_GRAPH_TRACER --> Kernel Function Graph Tracer
+CONFIG_STACK_TRACER	--> Traces Max stack
+
+How to check whether ftrace is already enabled or not?
+------------------------------------------------------
+
+Most of the Linux distributions already provide ftrace, to check verify "tracing" directory exists or not.
+
+# ls /sys/kernel/tracing
+
+mount the tracefs by any of the two steps:
+
+1. Adding an entry into /etc/fstab:
+
+ tracefs       /sys/kernel/tracing       tracefs defaults        0       0
+
+2. Using the mount command:
+#mount -t tracefs nodev /sys/kernel/tracing
+
+After mounting tracefs, you will have access to the control and output files of ftrace.
+
+It was initially in debugfs(/sys/kernel/debug/tracing)
+
+
+

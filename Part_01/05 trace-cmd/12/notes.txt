@@ -1,0 +1,8 @@
+trace-cmd profile
+------------------
+
+# trace-cmd profile ls
+
+# trace-cmd record --profile ls
+# trace-cmd report --profile
+

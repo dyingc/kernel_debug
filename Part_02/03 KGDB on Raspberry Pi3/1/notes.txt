@@ -1,0 +1,24 @@
+Kgdb on Raspberry Pi3
+-----------------------
+
+1. Build rpi-hwup-image for Raspberry Pi3 with the required KGDB Kernel configuration
+
+2. Build and install SDK: Needed for gdb : bitbake -c populate_sdk rpi-hwup-image
+
+3. Flash the image on to Raspberry Pi3
+
+4. Connect the serial port to Raspberry Pi3
+
+5. Build agent-proxy: # ./agent-proxy 5550^5551 0 /dev/ttyUSB0,115200
+
+6. To get into serial port of raspberrypi: telnet localhost 5550
+
+7. Get into workdir of virtual kernel: bitbake -e virtual/kernel | grep ^WORKDIR=
+
+8. On raspberry pi3:
+	# echo 'ttyS0,115200' > /sys/module/kgdboc/parameters/kgdboc
+	# echo g > /proc/sysrq-trigger
+
+9. $GDB image/boot/vmlinux-4.19.93
+    (gdb) set substitute-path /usr/src/kernel /home/lwl/Yocto_Training/build_pi/tmp/work-shared/raspberrypi3/kernel-source
+    (gdb) target remote localhost:5551

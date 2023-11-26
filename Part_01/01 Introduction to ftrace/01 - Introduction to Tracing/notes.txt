@@ -1,0 +1,26 @@
+What is tracing?
+----------------
+
+A traditional debugger allows you to inspect the system state once the system is halted
+	i.e., after an error has been detected, but doesn’t reveal the events leading to the error. 
+
+To understand why an event took place, the relevant context has to be restored. This requires tracing
+
+Tracing is the process of collecting information on the activity in a working system
+
+With tracing, program execution is recorded during run-time, allowing for later analysis of the trace
+
+Tracing provides developers with information useful for debugging.
+
+Difference between tracing and logging
+--------------------------------------
+
+Tracing is sometimes compared to logging. Just like logs, tracing data can be read as it is.
+
+With tracing, information is written about low-level events.
+These numbers in the hundreds or even thousands.
+
+With logging, information is written about higher-level events, which are much less frequent
+These includes users logging into the system, application errors, database transaction etc
+
+
