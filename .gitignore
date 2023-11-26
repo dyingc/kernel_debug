@@ -75,6 +75,5 @@ tags
 # Persistent undo
 [._]*.un~
 
-
 # Others
 .DS_Store
