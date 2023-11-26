@@ -1,0 +1,36 @@
+Examples
+----------------
+
+Example 1:
+------------
+
+# trace-cmd record -p function_graph -F ls
+
+# trace-cmd report
+
+Example 2:
+-------------
+
+# trace-cmd record -e all
+
+# trace-cmd report -F 'net/netif_receive_skb:name=="ens33"'
+
+Example 3:
+-----------
+
+# trace-cmd record -p function --func-stack
+
+Example 4:
+-----------------
+
+# trace-cmd start -b 10000 -e 'sched_wakeup*' -e sched_switch -e gpio_value -e irq_handler_entry -e irq_handler_exit userapp
+
+# trace-cmd stop
+# trace-cmd extract
+
+Example 5
+------------
+
+# trace-cmd listen -p 5678 -d
+# trace-cmd record -N host:5678 -e all
+

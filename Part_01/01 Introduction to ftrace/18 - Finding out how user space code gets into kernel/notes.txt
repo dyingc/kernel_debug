@@ -1,0 +1,32 @@
+Finding out how user space code gets into kernel
+------------------------------------------------
+
+We can find out what is the first kernel function called when the user space code gets into the kernel using 'max_graph_depth' file
+
+Note: This can be used only with function_graph tracer
+
+max_graph_depth file contains the maximum depth it will trace into a function
+
+Default value: 0 - This means unlimited
+
+If you 'echo 1 > max_graph_depth', it will only the trace the first function and ignore the other functions.
+
+# cat trace
+
+'do_syscall_64()' is the function through which the user space code gets into the kernel space.
+
+If we want to find out the next function after 'do_syscall_64()':
+
+# 'echo 2 > max_graph_depth'
+
+# echo 0 > tracing_on
+
+# echo 1 > max_graph_depth
+
+# echo function_graph > current_tracer
+
+# sh -c 'echo $$ > set_ftrace_pid; echo 1 > tracing_on; exec echo hello'
+
+# cat trace
+
+

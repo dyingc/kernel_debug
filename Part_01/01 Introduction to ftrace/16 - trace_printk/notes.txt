@@ -1,0 +1,28 @@
+trace_printk
+--------------
+
+printk() is the king of all debuggers, but it has a problem.
+
+	Using printk in interrupt context such as timer interrupts, scheduler, network can create a live lock
+
+	Sometimes bug disappear when we add few printk's if something is time sensitive
+
+	printk when writing to the serial console may take several milliseconds
+
+With trace_printk
+
+	writing will be in the order of microseconds as it writes to a ring buffer instead of console
+
+	can be used in any context (interrupt, scheduler, NMI Code)
+
+	can be read via the 'trace' file
+
+The performance advantage of trace_printk() lets you record the most sensitive areas of the kernel with very little impact.
+
+For example you can add something like this to the kernel or module:
+
+            trace_printk("Hello %s\n", "LWL");
+
+Note: trace_printk() output will appear in any tracer, even the function and function graph tracers.
+
+	

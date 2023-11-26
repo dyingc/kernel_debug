@@ -1,0 +1,42 @@
+Who calls this kernel function
+----------------------------------
+
+With ftrace, you can find out who is calling a particular kernel function
+
+"function" tracer contains an option which creates backtrace for each function called by tracer: func_stack_trace
+
+At this function, give me stack dump. Opposite of call graph
+
+        Warning: Can cause live lock if all functions are traced !!
+                 Must use set_ftrace_filter Before enabling
+
+Note: You can use this feature only when the tracer is "function".
+
+Example1
+------------
+# echo vfs_read > set_ftrace_filter
+
+# echo function > current_tracer
+
+# echo 1 > options/func_stack_trace
+
+Example2:
+------------
+echo nop > current_tracer
+
+echo schedule > set_ftrace_filter
+
+cat set_ftrace_filter # double check
+
+echo 1 > options/func_stack_trace
+
+echo function > current_tracer
+
+sleep 1
+
+echo 0 > tracing_on
+
+echo 0 > options/func_stack_trace
+
+cat trace
+

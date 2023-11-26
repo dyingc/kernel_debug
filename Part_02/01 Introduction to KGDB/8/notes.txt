@@ -1,0 +1,20 @@
+Enabling KGDB at runtime
+------------------------
+
+Suppose, you have a scenario in which you have not enabled KGDB at boot time through kernel command line, but have compiled the kernel with the configuration required for KGDB.
+
+Now if you want to enable the KGDB, run the below commands on the target machine.
+
+Step 1: Specify the serial port, plus baud rate to the kgdboc
+
+#echo "ttyS0,115200" > /sys/module/kgdboc/parameters/kgdboc
+
+Step 2: Run the Sysrq magic sequence
+
+#echo g > /proc/sysrq-trigger
+
+On the Host machine it is the same set of commands
+
+Step1: gdb ./vmlinux
+Step2: target remote /dev/ttyS0
+

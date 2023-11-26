@@ -1,0 +1,24 @@
+trace-cmd extract
+-----------------
+
+trace-cmd extract is usually used after trace-cmd-start and trace-cmd-stop
+
+It can be used after the Ftrace tracer has been started manually through the Ftrace pseudo file system
+
+The extract command creates a trace.dat file that can be used by trace-cmd-report to read from
+
+It reads the kernel internal ring buffer to produce the trace.dat file
+
+# trace-cmd start -p function
+
+# trace-cmd stop
+
+# trace-cmd extract
+
+# trace-cmd report
+
+trace-cmd options
+-------------------
+
+The trace-cmd options command will examine all the trace-cmd plugins that are used by trace-cmd report and list them
+

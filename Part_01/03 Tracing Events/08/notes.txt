@@ -1,0 +1,73 @@
+Histogram
+------------
+
+Hist triggers is a new tracing feature that recently landed in Linux 4.7
+
+It can be used to aggregate trace event data into histograms.
+
+A histogram trigger command is an event trigger command that aggregates event hits into a hash table keyed on one or more trace event format fields (or stacktrace)
+
+Format:
+---------
+hist:keys=<field1[,field2,...]>[:values=<field1[,field2,...]>]
+  [:sort=<field1[,field2,...]>][:size=#entries][:pause][:continue]
+  [:clear][:name=histname1] [if <filter>]
+
+How it works
+-------------
+
+When a matching event is hit, an entry is added to a hash table using the key(s) and value(s) named.
+Keys and values correspond to fields in the event’s format description. 
+Values must correspond to numeric fields - on an event hit, the value(s) will be added to a sum kept for that field.
+If ‘values’ isn’t specified, an implicit ‘hitcount’ value (simply a count of event hits) will be automatically created and used as the only value.
+
+By default, the size of the hash table is 2048 entries. The ‘size’ parameter can be used to specify more or fewer than that.
+
+Example1:
+------------
+
+common_pid.execname display a common_pid as a program name
+
+# echo 'hist:key=common_pid.execname' > \
+      /sys/kernel/debug/tracing/events/raw_syscalls/sys_enter/trigger
+
+Wait for few seconds
+
+# cat /sys/kernel/debug/tracing/events/raw_syscalls/sys_enter/hist
+
+# echo '!hist:key=common_pid.execname' > \
+      /sys/kernel/debug/tracing/events/raw_syscalls/sys_enter/trigger
+
+Example2:
+------------
+
+# echo 'hist:key=common_pid.execname,ret' > \
+      /sys/kernel/debug/tracing/events/syscalls/sys_exit_read/trigger
+
+# cat /sys/kernel/debug/tracing/events/syscalls/sys_exit_read/hist
+
+# echo '!hist:key=common_pid.execname,ret' > \
+      /sys/kernel/debug/tracing/events/syscalls/sys_exit_read/trigger
+
+Example3:
+-----------
+
+# cd /sys/kernel/debug/tracing/events/kmem/kmalloc
+
+# cat format
+
+# echo 'hist:key=call_site:values=bytes_req' > trigger
+
+# cat trigger
+
+# cat hist
+
+# echo '!hist:key=call_site:values=bytes_req' > trigger
+
+Default sort order is ‘ascending’. To sort in the opposite direction, append .descending’ to the sort key.
+
+# echo 'hist:key=call_site:values=bytes_req:sort=bytes_req.descending' > trigger 
+
+# cat hist
+
+# echo '!hist:key=call_site:values=bytes_req:sort=bytes_req.descending' > trigger

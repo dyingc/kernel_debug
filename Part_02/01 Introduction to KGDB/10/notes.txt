@@ -1,0 +1,10 @@
+Breakpoint for creating/deleting directories
+--------------------------------------------
+
+(gdb) b __x64_sys_mkdir
+
+(gdb) b do_mkdirat
+
+(gdb) b __x64_sys_rmdir
+
+(gdb) b do_rmdir

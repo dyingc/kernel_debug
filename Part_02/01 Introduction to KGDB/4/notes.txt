@@ -1,0 +1,24 @@
+Target Boot with KGDB Support
+------------------------------
+
+After your kernel is built with KGDB support, it must be enabled
+
+In general, KGDB is enabled by passing a command line switch to the kernel via the kernel command line.
+
+If KGDB support is compiled into the kernel but not enabled via a command line switch, it does nothing.
+
+When KGDB is enabled, the kernel stops at a KGDB-enabled breakpoint very early in the boot cycle to allow you to connect to the target using gdb
+
+Append the following command line to kernel command line in grub:
+
+	kgdbwait kgdboc=ttyS0,115200
+
+	kgdbdoc: kgdb over console
+		 This is a KGDB I/O driver and we are supplying two arguments
+		 one informing the kernel to use ttyS0 serial port and the other 115200 baud rate
+
+	kgdwait: Informs the kernel to wait until the debugger is attached
+
+
+
+

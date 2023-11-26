@@ -1,0 +1,13 @@
+Pretty Print
+---------------
+
+(gdb) b vfs_read
+(gdb) c
+(gdb) p file
+(gdb) p *file
+
+This format is not the easiest to understand, but there is a way to make it better: the command 'set print pretty' causes gdb to structure printouts in a more appealing manner
+(gdb) set print pretty
+(gdb) p *file
+
+The disadvantage of this method, of course, is that it takes up much more space on the screen. It’s not uncommon to find that the printout of a structure takes up several hundred lines.

@@ -1,0 +1,20 @@
+Currently running tracer
+------------------------
+
+# trace-cmd stat 
+
+The command displays the various status of the tracing (ftrace) system. It displays
+
+	Tracer: if one of the tracers (like function_graph) is active. Otherwise nothing is displayed.
+
+	Events: Lists the events that are enable.
+
+	Event filters: Shows any filters that are set for any events
+
+	Function filters: Shows any filters for the function tracers
+
+	Graph functions: Shows any functions that the function graph tracer should graph
+
+	...
+
+$ man trace-cmd-stat

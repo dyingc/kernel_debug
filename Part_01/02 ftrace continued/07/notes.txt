@@ -1,0 +1,17 @@
+trace options
+-------------
+
+options directory
+-------------------
+
+        shows global options
+
+        shows current tracer options
+
+        starting with v4.4 - shows all tracer options
+
+        to enable echo 1 > options/option_name
+
+        to disable echo 0 > options/option_name
+
+

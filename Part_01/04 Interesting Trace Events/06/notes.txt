@@ -1,0 +1,30 @@
+events/module
+----------------
+
+Kernel modules are reference-counted, so that call to "rmmod" will fail if the reference-count is not zero
+
+module_get
+		kernel/module.c: trace_module_get in try_module_get()
+		increments the reference count of the module		
+
+module_put
+		kernel/module.c : trace_module_put in module_put()
+		decrements the reference count of the module		
+
+System calls to 
+	Load the module : init_module/finit_module
+	Unload the module: delete_module
+
+module_load
+		kernel/module.c: trace_module_load in load_module
+		called from init_module/finit_module	
+module_free
+		kernel/module.c : trace_module_free in free_module()
+		called from delete_module
+
+module_request:
+		kernel/kmod.c : trace_module_request in __request_module()
+		Used to load modules from kernel space
+
+
+

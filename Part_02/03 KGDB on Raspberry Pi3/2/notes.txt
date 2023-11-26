@@ -1,0 +1,22 @@
+KGDB on Qemuarm
+----------------
+1. Build core-image-minimal image with the required kernel configuration: bitbake core-image-minimal
+
+2. Build and install SDK : Needed for gdb : Two ways:
+	a. bitbake -c populate_sdk core-image-minimal : 
+		Build the SDK that matches the image
+		Best for a production build that can be used later for debugging, especially during long term maintenance
+	b. bitbake meta-toolchain :
+		Creates a smaller than typical SDK
+		Contains a minimal set of components
+
+3. Run the QEMU
+
+$ runqemu bootparams="nokaslr kgdboc=ttyAMA0,115200 kgdbwait" qemuparams="-serial tcp::1234,server,nowait"
+
+In above command we are connecting qemu emulated serial port to localhost:1234
+
+4. Get into workdir of virtual kernel: bitbake -e virtual/kernel | grep ^WORKDIR=
+$GDB ./vmlinux
+(gdb) target remote localhost:1234
+

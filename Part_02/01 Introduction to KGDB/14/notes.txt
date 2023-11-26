@@ -1,0 +1,22 @@
+kgdbcon
+--------
+
+kgdb allows you to see printk messages inside gdb, while gdb is connected to the target machine.
+
+There are two ways to activate this feature:
+
+1. Activate with the kernel command line option::
+
+        kgdbcon
+
+2. Use sysfs before configuring an I/O driver::
+
+        echo 1 > /sys/module/debug_core/parameters/kgdb_use_con
+
+Note: If you do this after you configure the kgdb I/O driver, the setting will not take effect until the next point the I/O is reconfigured.
+
+Important Point: You cannot use kgdboc + kgdbcon on a tty that is an active system console. An example of incorrect usage is::
+        console=ttyS0,115200 kgdboc=ttyS0 kgdbcon
+
+
+

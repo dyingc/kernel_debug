@@ -1,0 +1,20 @@
+Scheduling
+-----------
+Kernel : kernel/sched/core.c
+
+__schedule is the function which performs context switch. Here in this code you can observe it calls  trace_sched_switch(preempt, prev, next) before calling context_switch.
+
+
+
+wake_up_process(struct task_struct *p); 
+Wake up a specific process.
+Attempt to wake up the nominated process and move it to the set of runnable processes.
+
+Calls try_to_wake_up function which calls trace_sched_waking(p);
+
+It calls ttwu_remote function which calls ttwu_do_wakeup where the task state is set to RUNNING and trace_sched_wakeup is called
+
+sched_switch
+sched_waking
+sched_wakeup
+

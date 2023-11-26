@@ -1,0 +1,53 @@
+agent proxy
+-------------
+
+If you have only one serial port and want to use for both console and KGDB then you have to go with agent proxy
+
+agent-proxy is nothing more then a tty → tcp connection mux that can allow you to connect more than one client application to a tty. By using it, we can run the serial port client and gdb process simultaneously.
+
+agent-proxy CONSOLE_PORT^DEBUG_PORT IP_ADDR PORT
+
+		------------------
+		|Target system	 |
+		|with serial port|
+		------------------
+			|
+			V
+		-----------------
+		|agent-proxy	|
+		-----------------
+		  /		\
+		 /		 \
+		/		  \	
+	----------------	---------
+	|For		|	|	|
+	|console access |	|gdb	|
+	|<port1>        |	|<port2>|
+	----------------	---------
+Building Agent Proxy
+--------------------
+
+Step 1: Clone the repository
+
+git clone http://git.kernel.org/pub/scm/utils/kernel/kgdb/agent-proxy.git
+
+Step 2: Build the source
+
+cd agent-proxy ; make
+
+Running Agent Proxy
+----------------------
+Open a  new terminal and run the following command: 
+
+./agent-proxy 5550^5551 0 /dev/ttyUSB0,115200
+
+/dev/ttyUSB0 if you are using USB to serial device node. Now, you have 5550 port for console and 5551 port for kgdb
+
+To get the console logs:
+
+telnet localhost 5550
+
+KGDB Setup:
+-----------
+gdb ./vmlinux
+target remote localhost:5551

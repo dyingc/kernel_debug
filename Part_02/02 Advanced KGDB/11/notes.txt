@@ -1,0 +1,28 @@
+rbreak
+----------
+
+With "break" command, you can set one breakpoint at a time.
+
+Consider a scenario where you want to set a lot of breakpoints.
+
+Solution: rbreak or rb
+
+The gdb "rbreak" command allows you to use grep-style regular expressions to set breakpoint locations.
+
+Syntax: rbreak REGEXP
+
+(gdb) rbreak vfs_*
+
+To delete all breakpoints
+
+(gdb) delete breakpoints
+
+(gdb) rbreak fs/read_write.c:vfs_*
+
+What if i want to set breakpoints for every function in a given file?
+
+(gdb) rbreak fs/read_write.c:.
+
+
+
+

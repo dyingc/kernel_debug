@@ -1,0 +1,58 @@
+Kernel Debugging using GDB
+---------------------------
+
+User space processes can be debugged using gdb. With gdb you can
+	single-step,
+	stop,
+	resume,
+	put break-points,
+	inspect memory and variables,
+	look through call stack information
+
+What if we can use gdb on running Linux Kernel.
+
+Problem:
+----------
+How can a gdb debug running kernel as it is just a user space process.
+
+Solution:
+---------
+Client/Server Architecture
+User space programs can be debugged remotely using the combination of gdbserver on the target machine and gdb on the host machine/development machine.
+
+The Linux kernel has a GDB Server implementation called KGDB. It communicates with a GDB client over network or serial port connection
+
+Hardware Setup:
+---------------
+
+Two machines are required for using kgdb:
+
+	Host/Development Machine: Runs gdb against the vmlinux file which contains the symbols and performs debugging
+	Target Machine: Runs kgdb and is the machine to be debugged
+
+        ------------------                              --------------------
+        |       Host      |                             |       Target     |
+        |                 |                             |                  |
+        |  -------------  |                             |   ------------   |
+        | |     gdb     | |<--------------------------->|  |    kgdb    |  |
+        | |             | |             Serial or       |  |            |  |
+        | --------------  |             Ethernet        |  -------------   |
+        |       |         |             Connection      |        |         |
+        |  -------------- |                             |  --------------  |
+        | | Kernel image ||                             |  |Linux Kernel | |
+        | | with debug   ||                             |  |(zImage)     | |
+        | | symbols      ||                             |  |             | |
+        | | (vmlinux)    ||                             |  --------------- |
+        | ----------------|                             |                  |
+        -------------------                             --------------------
+
+KGDB is a GDB Server implementation integrated in the Linux Kernel
+
+Supports 
+	serial port communication (available in the mainline kernel) and 
+	network communication (patch required)
+
+Available in the mainline linux kernel since version 2.6.26 (x86 and sparc) and 2.6.27 (arm, mips and ppc)
+
+Enables full control over kernel execution on target, including memory read and write, step-by-step execution and even breakpoints in interrupt handlers
+                                                                                               
