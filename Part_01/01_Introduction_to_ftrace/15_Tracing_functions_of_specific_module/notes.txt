@@ -9,4 +9,15 @@ To trace all functions of a specific module, for example e1000 (Ethernet driver)
 # ifconfig enp0s3 up
 # ifconfig enp0s3 down
 
+Another example:
 
+# root@ubuntu19:/sys/kernel/tracing# echo ":mod:hello" > set_ftrace_filter
+# root@ubuntu19:/sys/kernel/tracing# cat set_ftrace_filter
+# test_hello_init [hello]
+# test_hello_exit [hello]
+# _dyingc_test [hello]
+# device_release [hello]
+# device_open [hello]
+# device_write [hello]
+# device_read [hello]
+# root@ubuntu19:/sys/kernel/tracing#
