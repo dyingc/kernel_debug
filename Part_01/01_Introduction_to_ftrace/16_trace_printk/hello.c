@@ -61,13 +61,13 @@ static irqreturn_t keyboard_handler(int irq, void *dev)
 /* registering irq */
 static int test_interrupt_init(void)
 {
-        trace_printk("%s: In init\n", __func__);
+        trace_printk("%s: In init - by trace_printk - Eric says.\n", __func__);
         return request_irq(irq, keyboard_handler, IRQF_SHARED,"my_keyboard_handler", &dev);
 }
 
 static void test_interrupt_exit(void)
 {
-        trace_printk("%s: In exit\n", __func__);
+        trace_printk("%s: In exit - by trace_printk - Eric says.\n", __func__);
         synchronize_irq(irq); /* synchronize interrupt */
         free_irq(irq, &dev);
 }
