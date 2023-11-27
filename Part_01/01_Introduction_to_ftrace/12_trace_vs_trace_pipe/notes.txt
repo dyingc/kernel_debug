@@ -3,7 +3,7 @@ trace vs trace_pipe
 
 ftrace internally uses a ring buffer of fixed size. 
 
-The size can be find out by reading "buffer_size_kb" file. 
+The size can be find out by reading "buffer_size_kb" file (and "buffer_total_size_kb" - used for the buffer size of all CPUs).
 
 If the buffer becomes full, it will overwrite the starting tracing entries.
 
@@ -18,13 +18,10 @@ trace_pipe
 trace is a non-consuming read. It pauses the tracing when you are reading
 trace_pipe is consumer. It doesn't stop the tracing
 
- Each time you read the contents of "trace" file it will print the same tracing entries, whereas with trace_pipe, each time you read the file the data is consumed, and in the next read data will be different also if there is no data trace_pipe will block.
+Each time you read the contents of "trace" file it will print the same tracing entries, whereas with trace_pipe, each time you read the file the data is consumed, and in the next read data will be different also if there is no data trace_pipe will block.
 
 # echo 0 > tracing_on
 # cat trace
 # cat trace
 # cat trace_pipe
 # cat trace_pipe
-
-
-
