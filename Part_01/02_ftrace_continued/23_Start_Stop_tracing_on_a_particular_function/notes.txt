@@ -8,12 +8,24 @@ We know 'tracing_on' file is used to disable/enable writing the traces on the ri
 
 ftrace also provides functionality to start tracing on a particular function call execution or stop tracing on a particular function execution.
 
-Syntax: function:command[:count]
+Syntax: echo 'function:command[:count]' >[>] set_ftrace_filter
 
 The command will be executed on the start of the function. The value of command can be
 	"traceon" to start the trace
 	"traceoff" to stop the trace
-	"stacktrace"
+	"stacktrace" to trace the calling stack of the function
+For example, if you use: echo 'device_open:stacktrace' > set_ftrace_filter, the contents in the trace file can be:
+```
+ => device_open
+ => chrdev_open                                                        
+ => do_dentry_open  
+ => path_openat
+ => do_filp_open
+ => do_sys_openat2
+ => __x64_sys_openat
+ => do_syscall_64
+ => entry_SYSCALL_64_after_hwframe
+```
 
 The count is optional, specifies the number of times the command should be executed.
 If there is no count specified, the command will be executed each time the function is called
@@ -29,5 +41,5 @@ How to remove this?
 Using '!' operator
 
 # echo '!ksys_read:traceoff' > set_ftrace_filter
-
+Note: You CANNOT use double-quote here!!!
 
