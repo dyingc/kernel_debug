@@ -14,57 +14,34 @@ Flags
 
 preempt-depth:
 --------------
-	The level of preempt_disabled
 
-Any time kernel code holds a spinlock, preemption is disabled on the relevant processor
+The level of preempt_disabled
+
+Any time kernel code holds a spinlock (a spinlock is a type of lock that allows one thread to 'spin' while waiting for the lock to become available), preemption is disabled on the relevant processor
 
 Disabling preemtion is done by just incrementing the preempt_count for that process
 
 If the process's preempt_count is nonzero, then the process can not be preempted and this check is done
 while returning from system call and interrupt context
 
-Kernel preemption is disabled via preempt_disable() and enabled via preempt_enable().
+Kernel preemption is disabled via preempt_disable(), increasing the preempt_count, and enabled via preempt_enable(), decreasing the preempt_count.
 
-The call is nestable; you may call it any number of times. For each call, a corresponding call to preempt_enable() is required. The final corresponding call to preempt_enable()re-enables preemption.
+The call to preempt_disable() is nestable; you may call it any number of times, as long as the calls to preempt_disable() are balanced with the same number of calls to preempt_enable(). It means, for each call to preempt_disable(), a corresponding call to preempt_enable() is required. The final corresponding call to preempt_enable() re-enables preemption.
 
 
-CONFIG_PREEMPT should bes set for this to work
+CONFIG_PREEMPT
+-----------------------
+
+CONFIG_PREEMPT should bes set for this to work (cat /boot/config-$(uname -r) | grep 'CONFIG_PREEMPT '). It is a kernel configuration option that enables kernel preemption. When set, it allows the kernel to preempt a task even when it is in kernel mode, leading to lower latency at the cost of potential throughput reduction.
+
 
 CONFIG_PREEMPT_VOLUNTARY
 -----------------------
 
-Originally there were only two preemption options for the kernel: running with preemption on or off
+Originally there were only two preemption options for the kernel: running with preemption on or off. That setting was controlled by the kernel config option, CONFIG_PREEMPT
 
-That setting was controlled by the kernel config option, CONFIG_PREEMPT
-
-In 2005,  a third option named CONFIG_PREEMPT_VOLUNTARY that was designed
+In 2005,  a third option named CONFIG_PREEMPT_VOLUNTARY that was designed (cat /boot/config-$(uname -r) | grep 'CONFIG_PREEMPT_VOLUNTARY'). It was introduced as a middle ground between fully preemptive and non-preemptive kernel. This setting allows certain points in the kernel where preemption is checked more frequently, improving responsiveness without compromising throughput as much as CONFIG_PREEMPT.
 
 Nowadays, CONFIG_PREEMPT_VOLUNTARY is the default setting for pretty much all Linux distributions
 
 https://www.codeblueprint.co.uk/2019/12/23/linux-preemption-latency-throughput.html
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
