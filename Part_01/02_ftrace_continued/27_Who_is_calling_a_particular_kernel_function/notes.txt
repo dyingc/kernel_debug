@@ -12,7 +12,34 @@ At this function, give me stack dump. Opposite of call graph
 
 Note: You can use this feature only when the tracer is "function".
 
-Example1
+Example1:
+------------
+```
+cd /sys/kernel/tracing
+echo 0 > tracing_on
+echo function > current_tracer
+echo 1 > options/func_stack_trace
+echo __x64_sys_read > set_ftrace_filter
+echo > trace
+echo 1 > tracing_on
+sleep 5
+echo 0 > tracing_on
+echo > set_ftrace_filter
+echo 0 > options/func_stack_trace
+```
+
+In the trace file, we'll have something like:
+```
+ => __x64_sys_read
+ => do_syscall_64
+ => entry_SYSCALL_64_after_hwframe
+            sshd-3322  [000] .... 11045.665880: __x64_sys_read <-do_syscall_64
+            sshd-3322  [000] .... 11045.665881: <stack trace>
+```
+It means: The sshd (PID: 3322, at CPU 0) initiated the call stack: entry_SYSCALL_64_after_hwframe --> do_syscall_64 --> __x64_sys_read
+
+
+Example2:
 ------------
 # echo vfs_read > set_ftrace_filter
 
@@ -20,7 +47,7 @@ Example1
 
 # echo 1 > options/func_stack_trace
 
-Example2:
+Example3:
 ------------
 echo nop > current_tracer
 
