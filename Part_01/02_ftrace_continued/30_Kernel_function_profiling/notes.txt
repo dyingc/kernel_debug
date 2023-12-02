@@ -1,0 +1,67 @@
+Kernel function profiling
+----------------------------
+
+From Wikipedia, function profiling provides you the following :
+
+	Space or Time Complexity of a Program
+	Usage of Particular Instruction
+	Frequency and duration of function calls
+
+ftrace can provide you the following function profiling information using 'function_profiling_enabled' file. 
+
+	Frequency of function calls (When the tracer is 'function')
+	Duration spent in each function calls (When the tracer is 'function_graph')
+
+Steps for Function profiling:
+-----------------------------
+
+1. Enable the function tracer: 'function'/'function_graph'
+# echo 'function' > current_tracer
+2. Enable the function profiling:
+# echo '1' > function_profile_enabled
+3. Disable the function profileing:
+# echo '0' > function_profile_enabled
+
+Observing Results
+-----------------
+
+To observe the results look into '/sys/kernel/tracing/trace_stat' folder.
+
+You will observe a lot of file with the following name: function<number> (e.g. function0, function1,...), where number represents the core on which the function is executing.
+
+Example
+-----------------
+root@ubuntu19:/sys/kernel/tracing/trace_stat# head -10 function0 
+  Function                               Hit    Time            Avg             s^2
+  --------                               ---    ----            ---             ---
+  schedule                               940    348581699 us     370831.5 us     6991124 us  
+  do_syscall_64                         4024    268635189 us     66758.24 us     139612.2 us 
+  schedule_hrtimeout_range               331    268440057 us     810997.1 us     58690975 us 
+  schedule_hrtimeout_range_clock         331    268439959 us     810996.8 us     58678845 us 
+  poll_schedule_timeout.constpro         295    232516999 us     788193.2 us     146230800 us 
+  __x64_sys_poll                         536    192052304 us     358306.5 us     37630842 us 
+  do_sys_poll                            536    192051879 us     358305.7 us     37537850 us 
+  core_sys_select                        180    40484258 us     224912.5 us     490027990 us 
+
+To clean contents in the `/sys/kernel/tracing/trace_stat/functionx`
+---------------------------------------------------------------------
+root@ubuntu19:/sys/kernel/tracing# echo nop > current_tracer 
+root@ubuntu19:/sys/kernel/tracing# wc -l trace_stat/function0
+2 trace_stat/function0
+root@ubuntu19:/sys/kernel/tracing# echo 1 > function_profile_enabled
+root@ubuntu19:/sys/kernel/tracing# wc -l trace_stat/function0
+1655 trace_stat/function0
+root@ubuntu19:/sys/kernel/tracing# wc -l trace_stat/function0
+1877 trace_stat/function0
+root@ubuntu19:/sys/kernel/tracing# wc -l trace_stat/function0
+1885 trace_stat/function0
+root@ubuntu19:/sys/kernel/tracing# echo 0 > function_profile_enabled
+root@ubuntu19:/sys/kernel/tracing# echo function_graph > current_tracer # Use a diffrent tracer here
+root@ubuntu19:/sys/kernel/tracing# wc -l trace_stat/function0
+2119 trace_stat/function0
+root@ubuntu19:/sys/kernel/tracing# echo 1 > function_profile_enabled # When we see this error, the contents cleared (I can't find other ways)
+-bash: echo: write error: Device or resource busy
+root@ubuntu19:/sys/kernel/tracing# wc -l trace_stat/function0
+2 trace_stat/function0
+root@ubuntu19:/sys/kernel/tracing# 
+
