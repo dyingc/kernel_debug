@@ -40,7 +40,7 @@ int main()
 		exit(-1);
 	}
 	setup_trace_marker();
-	ret = write(tracing_on_fd, "1", 1);
+	ret = write(tracing_on_fd, "1", 1); // Enable tracing
 	if (ret < 0) {
 		perror("error:");
 		exit(-1);
@@ -48,7 +48,7 @@ int main()
 	write_trace_marker("Before printf");
 	printf("Hello Printf\n");
 	write_trace_marker("After printf");
-	ret = write(tracing_on_fd, "0", 1);
+	ret = write(tracing_on_fd, "0", 1); // Disable tracing
 	if (ret < 0) {
 		perror("error:");
 		exit(-1);

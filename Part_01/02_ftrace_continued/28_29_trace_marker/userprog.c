@@ -5,6 +5,12 @@
 #include <stdarg.h>
 #include <unistd.h>
 
+/*
+ *
+ * It's no longer been used
+ *
+ */ 
+
 static int marker_fd = -1;
 
 static void setup_trace_marker(void)

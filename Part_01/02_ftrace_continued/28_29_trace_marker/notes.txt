@@ -1,0 +1,46 @@
+trace_marker
+----------------
+Seeing what happens inside the kernel gives the user a better understanding of how their system works
+
+But sometimes there needs to be coordination between what is happening in user space and what is happening inside the kernel. Sometimes, especially in concurrent context, when timing and order of events can be critical, it'll be very helpful to insert custom markers into the kernel trace so that the developers can synchronize or correlate specific user space actiosn with kernel events.
+
+Let's say you are doing something in the user space and you want to synchronize with the tracing, trace_marker file was created
+
+It provides a way to write into the Ftrace ring buffer from user space.
+
+# echo nop > current_tracer
+# echo 1 > tracing_on # The line is a MUST or (if tracing_on is 0) there'll be "-bash: echo: write error: Bad file descriptor" error when you run: `echo 'Hello World!' > trace_marker`
+# echo 'Hello World!' > trace_marker
+# cat trace | tail -1
+            bash-2241  [000] .... 13509.099073: tracing_mark_write: Hello World!
+
+Whatever you wrote is in the trace buffer
+
+Using the C program in this folder (video: 29)
+-------------------------------------------------
+### Under /sys/kernel/tracing
+echo 0 > tracing_on
+echo function > current_tracer
+echo > trace
+
+### Under ./
+make clean; make userprog1
+sudo ./userprog1 # the `tracing_on` will be set to `1`, and then `0`, in this program
+
+### Under /sys/kernel/tracing
+cat trace | egrep '(Before|After|Hello) [Pp]rintf' -C 3
+       userprog1-6907  [000] .... 37407.956984: _cond_resched <-__sb_start_write
+       userprog1-6907  [000] .... 37407.956984: rcu_all_qs <-_cond_resched
+       userprog1-6907  [000] .... 37407.956984: __vfs_write <-vfs_write
+       userprog1-6907  [000] .... 37407.956984: tracing_mark_write: Before printf ####### Pay attention to here
+       userprog1-6907  [000] .... 37407.956985: __fsnotify_parent <-vfs_write
+       userprog1-6907  [000] .... 37407.956985: fsnotify <-vfs_write
+       userprog1-6907  [000] .... 37407.956985: __sb_end_write <-vfs_write
+--
+       userprog1-6907  [000] .... 37407.958103: _cond_resched <-__sb_start_write
+       userprog1-6907  [000] .... 37407.958103: rcu_all_qs <-_cond_resched
+       userprog1-6907  [000] .... 37407.958104: __vfs_write <-vfs_write
+       userprog1-6907  [000] .... 37407.958104: tracing_mark_write: After printf ####### Pay attention to here
+       userprog1-6907  [000] .... 37407.958104: __fsnotify_parent <-vfs_write
+       userprog1-6907  [000] .... 37407.958105: fsnotify <-vfs_write
+       userprog1-6907  [000] .... 37407.958105: __sb_end_write <-vfs_write
