@@ -1,4 +1,4 @@
-Capturing Ftrace to oops when kernel panic
+Capturing ftrace to oops when kernel panic
 -------------------------------------------
 
 You can capture the function calls leading up to a panic using ftrace
