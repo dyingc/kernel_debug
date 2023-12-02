@@ -24,3 +24,21 @@ ftrace=function_graph tracing_thresh=200
 this traces all functions taking longer than 200 microseconds (.2 ms). You can use any duration threshhold you want.
 
 Note: the tracer starts sometime during initialization, and you only get timings after it starts
+
+The current kernel command-line:
+----------------------------------
+root@ubuntu19:/sys/kernel/tracing# cat /proc/cmdline 
+BOOT_IMAGE=/boot/vmlinuz-5.0.0-38-generic root=/dev/mapper/ubuntu--vg-root ro quiet splash
+
+Change it:
+------------
+root@ubuntu19:/sys/kernel/tracing# cat /etc/default/grub | grep CMDLINE
+GRUB_CMDLINE_LINUX_DEFAULT="quiet splash"
+GRUB_CMDLINE_LINUX=""
+
+## We can change it to:
+root@ubuntu19:/sys/kernel/tracing# cat /etc/default/grub | grep CMDLINE
+GRUB_CMDLINE_LINUX_DEFAULT="quiet splash ftrace=function"
+GRUB_CMDLINE_LINUX=""
+
+## Do not forget to run `sudo update-grub2` after your above change. Of course, restart is needed for it to take effect.
