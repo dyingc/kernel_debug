@@ -3,7 +3,7 @@ What's in an event?
 
 id
 ------
-id is a unique identifier that can be used to attach to a specific tracepoint
+There's an `id` file under each trace event folder. `id` is a unique identifier that can be used to attach to a specific tracepoint
 
 format
 --------
@@ -16,7 +16,7 @@ This file
 
 Every event has a set of common fields associated with it; these are the fields prefixed with common_
 
-The other fields vary between events and correspond to the fields defined in the TRACE_EVENT definition for that event.
+The other fields vary between events and correspond to the fields defined in the TRACE_EVENT definition for that event (Note: the `syscall` related tracepoints, eg: /sys/kernel/tracing/events/syscalls/sys_enter_bind, are not generated using this TRACE_EVENT macro. Instead, they are often generated automatically based on the system calls to avoid manually writing tracepoints for each syscall, given the large number of system calls.).
 
 Each field in the format has the form:
 

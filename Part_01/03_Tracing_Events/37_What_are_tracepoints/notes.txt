@@ -67,6 +67,8 @@ Callback function records the data passed to it into the tracer ring buffer
 
 Create a function that parses the data recorded to the ring buffer and translate it to a human readable format that the tracer can display to a user.
 
+(Note: the `syscall` related tracepoints, eg: /sys/kernel/tracing/events/syscalls/sys_enter_bind, are not generated using this TRACE_EVENT macro. Instead, they are often generated automatically based on the system calls to avoid manually writing tracepoints for each syscall, given the large number of system calls.)
+
 
 Delve into the details
 ------------------------
