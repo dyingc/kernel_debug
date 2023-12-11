@@ -51,9 +51,7 @@ When tracepoint is on
 
 Unlike ftracer, trace point can record local variables of the function
 
-Kernel uses TRACE_EVENT macro for adding tracepoints and trace_* (trace_sched_switch)
-
-Note, you can search "trace_sched_switch" 
+Kernel uses TRACE_EVENT macro for `dynamically` adding tracepoints (trace_*, eg: trace_sched_switch), by extracting the macro (See the following for details).
 
 
 TRACE_EVENT macro
