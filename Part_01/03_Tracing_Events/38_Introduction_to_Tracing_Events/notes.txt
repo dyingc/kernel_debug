@@ -51,6 +51,7 @@ If you want to enable group of events, for example enable all sched events
 
 # echo nop > current_tracer
 # echo 1 > events/sched/enable
+# echo 1 > tracing_on
 # cat trace
 
 # echo 1 > events/irq/enable
