@@ -1,0 +1,24 @@
+Tracing all mkdir
+-------------------
+
+# cat available_events | grep -i mkdir
+
+# echo nop > current_tracer
+
+#  echo sys_enter_mkdir > set_event
+
+# cat set_event
+
+# mkdir /tmp/lwl1
+
+# cat trace
+
+# mkdir /tmp/lwl2 -m 1755
+
+# cat trace
+
+Inside trace
+--------------
+    mkdir-2197988 [002] ..... 798433.932773: sys_mkdir(pathname: 7ffe0f5e7cd2, mode: 3ed)
+
+Here, in the `mode: 3ed`, `3ed` is in HEX mode: 0x3ed=0o1755 (octal 1755)
