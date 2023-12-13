@@ -1,8 +1,8 @@
 #!/bin/bash
 
-BASE="https://www.kernel.org/doc/Documentation/trace/" # https://www.kernel.org/doc/html/v5.0/trace/index.html
+BASE="https://www.kernel.org/doc/Documentation/security/" # https://www.kernel.org/doc/html/v5.0/security/index.html
 
-curl ${BASE} --output root.html 2>/dev/null
+curl "${BASE}" --output root.html 2>/dev/null
 
 cat root.html | egrep "^<a href=" | cut -d '"' -f 2 | egrep -v '/$' | awk '{print "'"${BASE}"'"$1}' | while read item
 do
