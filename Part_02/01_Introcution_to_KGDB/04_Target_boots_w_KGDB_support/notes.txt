@@ -11,11 +11,16 @@ When KGDB is enabled, the kernel stops at a KGDB-enabled breakpoint very early i
 
 Append the following command line to kernel command line in grub:
 
+```
 	kgdbwait kgdboc=ttyS0,115200
+```
+
+Explanation
+-------------
 
 	kgdbdoc: kgdb over console
 		 This is a KGDB I/O driver and we are supplying two arguments
-		 one informing the kernel to use ttyS0 serial port and the other 115200 baud rate
+		 one informing the kernel to use ttyS0 serial port (/dev/ttyS0) and the other 115200 baud rate
 
 	kgdwait: Informs the kernel to wait until the debugger is attached
 
