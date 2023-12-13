@@ -1,0 +1,36 @@
+Hardware Setup
+----------------
+
+We will be using two virtual boxes (Development and Target) connecting serial port
+Network Settings: Bridged adapter, Promiscous mode
+Pipe Settings: Host pipe
+
+
+Target VM
+----------------
+
+From VirtualBox, Settings -> Serial Ports -> Enable Serial Port
+  Port Number: COM1
+  Port Mode: Host Pipe
+  Connect to existing pipe/socket: NOT checked
+  Path/Address: \\.\pipe\com1
+  IRQ: use default value
+  I/O Port: use default value
+
+
+Develope VM
+----------------
+
+From VirtualBox, Settings -> Serial Ports -> Enable Serial Port
+  Port Number: COM1
+  Port Mode: Host Pipe
+  Connect to existing pipe/socket: Checked
+  Path/Address: \\.\pipe\com1
+  IRQ: use default value
+  I/O Port: use default value
+
+
+Note
+----------------
+
+You need to start the target VM first.
