@@ -60,7 +60,11 @@ static int handler_pre(struct kprobe *p, struct pt_regs *regs) { // the `pt_regs
         goto out;
 
     // Ensure safe memory access
-    if (down_read_trylock(&mm->mmap_sem) == 0)
+#ifdef CONFIG_MMU
+    if (down_read_trylock(&mm->mmap_lock) == 0) // Updated to use mmap_lock
+#else
+    if (down_read_trylock(&mm->mmap_sem) == 0) // Fallback to mmap_sem for non-MMU systems
+#endif
         goto out;
 
     arg_start = mm->arg_start;
@@ -89,7 +93,11 @@ static int handler_pre(struct kprobe *p, struct pt_regs *regs) { // the `pt_regs
     kfree(cmdline);
 
 out_unlock:
-    up_read(&mm->mmap_sem);
+#ifdef CONFIG_MMU
+    up_read(&mm->mmap_lock); // Updated to use mmap_lock
+#else
+    up_read(&mm->mmap_sem); // Fallback to mmap_sem for non-MMU systems
+#endif
 out:
 
     return 0;

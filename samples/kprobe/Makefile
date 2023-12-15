@@ -2,6 +2,7 @@
 obj-m += kprobe_bind.o
 
 all:
+	./prepare_kernel.sh
 	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
 	sudo insmod kprobe_bind.ko
 
