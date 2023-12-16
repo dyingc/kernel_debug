@@ -30,7 +30,7 @@ static int handler_pre(struct kprobe *p, struct pt_regs *regs) { // the `pt_regs
     char *cmdline;
     unsigned long arg_start, arg_end, len;
 
-    printk(KERN_INFO "Before %s: sockfd=%lu, addr=%px, addrlen=%lu\n", symbol_name, regs->di, addr, regs->dx);
+    //printk(KERN_INFO "Before %s: sockfd=%lu, addr=%px, addrlen=%lu\n", symbol_name, regs->di, addr, regs->dx);
 
     // Safely copy the address from user space
     if (copy_from_user(&address, addr, addrlen)) {
@@ -86,6 +86,9 @@ static int handler_pre(struct kprobe *p, struct pt_regs *regs) { // the `pt_regs
         struct sockaddr_in6 *addr_in6 = (struct sockaddr_in6 *)&address;
         port = ntohs(addr_in6->sin6_port);
         printk(KERN_INFO "Binding IPv6 (sockfd: %lu): %pI6:%u - PID: %d, Command: %s (%s)\n", sockfd, &addr_in6->sin6_addr, port, current->pid, current->comm, cmdline);
+    } else if (address.ss_family == AF_NETLINK) { // Communication between kernel and userspace applications
+        //printk(KERN_INFO "Network Link: address.ss_family = %d\n", address.ss_family);
+        goto out_unlock;
     } else {
         printk(KERN_INFO "Unsupported socket family: address.ss_family = %d\n", address.ss_family);
     }
@@ -101,12 +104,11 @@ out_unlock:
     up_read(&mm->mmap_sem); // Fallback to mmap_sem for non-MMU systems
 #endif
 out:
-
     return 0;
 }
 
 static void handler_post(struct kprobe *p, struct pt_regs *regs, unsigned long flags) {
-    printk(KERN_INFO "Post-handler: Probed function completed\n");
+    //printk(KERN_INFO "Post-handler: Probed function completed\n");
     // Access registers using regs pointer if needed
 }
 
