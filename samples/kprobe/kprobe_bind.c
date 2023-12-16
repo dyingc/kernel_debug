@@ -1,3 +1,4 @@
+#include "process_info.h"
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/kprobes.h>
@@ -7,6 +8,10 @@
 #include <linux/sched/signal.h>  // for for_each_process - to get full command line
 #include <linux/mm_types.h>      // for mm_struct - to get full command line
 #include <linux/fs.h>            // for file and path structures - to get full command line
+
+MODULE_LICENSE("GPL");
+MODULE_AUTHOR("Eric Dong");
+MODULE_DESCRIPTION("Monitor the __sys_bind system call");
 
 /**
  * Note, this one add pre and post hook to system call "bind".
@@ -24,6 +29,7 @@ static int handler_pre(struct kprobe *p, struct pt_regs *regs) { // the `pt_regs
     unsigned long addrlen = regs->dx; // Third argument - Length of address
     struct sockaddr_storage address;
     unsigned short port;
+    struct process_info p_info = get_process_info();
 
     //printk(KERN_INFO "Before %s: sockfd=%lu, addr=%px, addrlen=%lu\n", symbol_name, regs->di, addr, regs->dx);
 
@@ -34,8 +40,6 @@ static int handler_pre(struct kprobe *p, struct pt_regs *regs) { // the `pt_regs
     } else {
     // printk(KERN_INFO "%lu bytes of data have been copied from user space\n", addrlen);
     }
-
-    struct process_info p_info = process_info();
 
     // Handle IPv4 and IPv6 addresses
     if (address.ss_family == AF_INET) {
@@ -54,6 +58,8 @@ static int handler_pre(struct kprobe *p, struct pt_regs *regs) { // the `pt_regs
     }
 
 out:
+    kfree(p_info.comm);
+    kfree(p_info.cmdline);
     return 0;
 }
 
@@ -85,5 +91,3 @@ static void __exit kprobe_exit(void) {
 
 module_init(kprobe_init)
 module_exit(kprobe_exit)
-
-MODULE_LICENSE("GPL");

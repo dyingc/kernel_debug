@@ -1,7 +1,8 @@
 #include "process_info.h"
-#include <linux/mm_types.h>
-#include <linux/fs.h>
-#include <linux/slab.h> // For kmalloc and kfree
+
+MODULE_LICENSE("GPL");
+MODULE_AUTHOR("Eric Dong");
+MODULE_DESCRIPTION("Provide the functionality to get the current process' information");
 
 struct process_info get_process_info(void) {
     struct process_info info;
@@ -18,10 +19,10 @@ struct process_info get_process_info(void) {
 
 #ifdef CONFIG_MMU
     if (down_read_trylock(&mm->mmap_lock) == 0) // Updated to use mmap_lock
-        return;
+        return info;
 #else
     if (down_read_trylock(&mm->mmap_sem) == 0) // Fallback to mmap_sem for non-MMU systems
-        return;
+        return info;
 #endif
 
     arg_start = mm->arg_start;
@@ -55,3 +56,5 @@ out_unlock:
 
     return info;
 }
+
+EXPORT_SYMBOL_GPL(get_process_info);

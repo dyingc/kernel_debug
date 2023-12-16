@@ -1,6 +1,10 @@
 #ifndef PROCESS_INFO_H
 #define PROCESS_INFO_H
 
+#include <linux/module.h>
+#include <linux/mm_types.h>
+#include <linux/fs.h>
+#include <linux/slab.h> // For kmalloc and kfree
 #include <linux/sched.h> // For 'current' and other process-related structures
 
 // struct to hold process information
