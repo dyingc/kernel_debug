@@ -33,4 +33,7 @@ From VirtualBox, Settings -> Serial Ports -> Enable Serial Port
 Note
 ----------------
 
-You need to start the target VM first.
+You need to start the target VM first and this will generate a '\\.\pipe\com1' `socket` file as following. This socket file will be needed by the dev VM.
+
+(base) dyingc@hyperml:~/udemy/Linux_Kernel/vm_preparation$ file \\\\.\\pipe\\com1
+\\.\pipe\com1: socket

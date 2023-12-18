@@ -9,21 +9,56 @@ If KGDB support is compiled into the kernel but not enabled via a command line s
 
 When KGDB is enabled, the kernel stops at a KGDB-enabled breakpoint very early in the boot cycle to allow you to connect to the target using gdb
 
-Append the following command line to kernel command line in grub:
+Append the following command line to kernel command line in grub (Target VM:/etc/default/grub -> GRUB_CMDLINE_LINUX_DEFAULT):
 
 ```
 	kgdbwait kgdboc=ttyS0,115200
 ```
 
+Value of `GRUB_CMDLINE_LINUX_DEFAULT` is changed 
+From:
+------
+GRUB_CMDLINE_LINUX_DEFAULT="quiet splash"
+
+To:
+------
+GRUB_CMDLINE_LINUX_DEFAULT="quiet splash kgdbwait kgdboc=ttyS0,115200"
+Or
+
+GRUB_CMDLINE_LINUX_DEFAULT="splash kgdbwait kgdboc=ttyS0,115200"
+
 Explanation
 -------------
 
-	kgdbdoc: kgdb over console
+	kgdboc: Stands for "KGDB Over Console." It's a way to specify how the debugger communicates with the kernel.
 		 This is a KGDB I/O driver and we are supplying two arguments
 		 one informing the kernel to use ttyS0 serial port (/dev/ttyS0) and the other 115200 baud rate
 
-	kgdwait: Informs the kernel to wait until the debugger is attached
+	kgdwait: Instructing the kernel to wait for a connection from a kernel debugger at the earliest possible point during boot
 
 
+  quiet: Instructs the kernel to minimize the number of messages shown during boot-up. It's often used to reduce screen clutter and make the boot process appear smoother.
 
 
+  splash: enables the splash screen at boot. This is typically a graphical representation of the boot process, often seen as a logo or loading bar, rather than a scroll of text messages.
+
+
+Take effective
+----------------
+
+$ sudo update-grub2
+
+
+Reboot
+----------------
+
+$ sudo reboot
+
+Note: You'll see something like:
+
+```
+[ 0.5240241 KGDB: Waiting for connection from remote gdb...
+
+Entering kdb (current=0xffff8c00fcc84500, pid 1) on processor 0 due to Keyboard Entry
+
+[0]kdb>
