@@ -1,0 +1,52 @@
+Kernel Debugging with GDB
+--------------------------
+
+It is three steps to debug the Linux Kernel with GDB:
+        1. Compile the kernel with KGDB Support
+        2. Configure the Linux kernel on the target to run in debug mode
+        3. Use the GDB client to connect to the target via serial or network
+
+
+Kernel Configuration
+--------------------
+
+$ kernel_name="linux-5.0"
+
+$ wget https://cdn.kernel.org/pub/linux/kernel/v5.x/${kernel_name}.tar.xz
+
+$ tar xvf ${kernel_name}.tar.xz
+
+$ cd ${kernel_name}
+
+$ sudo apt install build-essential dkms flex bison libncurses-dev
+
+$ make oldconfig
+
+$ make nconfig # starts a CLI interface to choose kernel options
+
+CONFIG_KGDB (Press F8 to search "KGDB"): "Kernel hacking" ---> "KGDB: kernel debugger" (by default, this enabled by a "*" in front of it)
+CONFIG_KGDB_SERIAL_CONSOLE (Press F8 to search "KGDB_SERIAL_CONSOLE") -"Kernel hacking" ---> "KGDB: kernel debugger" --> "KGDB: use kgdb over the serial console" (by default, this is enabled by a "*" in front of it)
+CONFIG_DEBUG_INFO: (Press F8 to search "DEBUG_INFO") "Kernel hacking" ---> "Compile-time checks and compiler options" ---> "Compile the kernel with debug info" (by default, this is enabled by a "*" in front of it)
+
+Optional (Press F8 to search):
+CONFIG_FRAME_POINTER – Yes - - Allows you to more accurately construct stack back traces while debugging the kernel
+CONFIG_DEBUG_RODATA  - No - If the architecture supports this option, you should consider turning this off, as this prevents the use of software breakpoints because it marks the certain regions of the kernel memory space as read-only. Or you can use hardware break points in gdb, if you still want this option to be enabled.
+
+Press F6 to save (to ".config")
+
+
+Kernel compilation
+--------------------
+
+$ sudo apt install libssl-dev libelf-dev
+
+$ make -j8
+
+$ sudo make modules_install -j8
+
+$ make install
+
+Copy the linux build folder to development machine
+--------------------
+
+Copy the "vmlinux" file to the dev VM.
