@@ -24,20 +24,9 @@ Download the same kernel file
 
 On dev VM:
 
-$ cd ~/udemy/kernel; mkdir kgdb; mv vmlinux kgdb/; cd kgdb
+$ cd ~/udemy/kernel; mkdir kgdb; mv vmlinux kgdb/; cd kgdb # The "vmlinux" was copied from the Target VM in the previous session
 $ kernel_name="linux-5.0" ; wget https://cdn.kernel.org/pub/linux/kernel/v5.x/${kernel_name}.tar.xz && tar xvf ${kernel_name}.tar.xz
 
 
-Connecting to Target over Serial
----------------------------------
-
-$ sudo gdb vmlinux
-
-(gdb)target remote /dev/ttyS0 # Wait a moment until the `gdb` prompt appears again.
-
-Now, you can do Single-stepping or put breakpoints and etc.
-
-(gdb) continue
-
-
 Now, we need to continue to make the Target VM boots in `gdb` support mode.
+

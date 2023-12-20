@@ -1,0 +1,39 @@
+Ensure you dev env
+---------------------------------
+
+- Ensure the `vmlinux` file has been copied from the Target VM
+- Ensure the kernel file, downloaded from https://cdn.kernel.org/pub/linux/kernel, has been unpacked and the `vmlinux` is copied to the unpack folder
+- Ensure the following `sudo gdb vmlinux` is executed in the above `unpack folder`
+
+
+Connecting to Target over Serial
+---------------------------------
+
+$ sudo gdb vmlinux
+
+(gdb)target remote /dev/ttyS0 # Wait a moment until the `gdb` prompt appears again.
+Remote debugging using /dev/ttyS0
+0xffffffffbd76e034 in ?? ()
+(gdb)
+
+Now, you can do Single-stepping or put breakpoints and etc.
+
+(gdb) continue
+
+
+Troubleshooting
+---------------------------------
+
+If you see error as the following:
+```
+(gdb) target remote /dev/ttyS0
+Remote debugging using /dev/ttyS0
+Ignoring packet error, continuing...
+warning: unrecognized item "timeout" in "qSupported" response
+Ignoring packet error, continuing...
+Remote replied unexpectedly to 'vMustReplyEmpty': timeout
+```
+
+You need to restart the Target VM again and then restart the Developer VM. Somehow, noticed that this connection can be used only once and if you quit from gdb and reenter, it will fail as the above.
+
+I tried to restart the Target VM only and re-connect gdb seems also working.

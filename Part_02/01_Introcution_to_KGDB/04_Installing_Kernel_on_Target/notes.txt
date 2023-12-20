@@ -10,27 +10,25 @@ It is three steps to debug the Linux Kernel with GDB:
 Kernel Configuration
 --------------------
 
-$ kernel_name="linux-5.0"
+$ kernel_name="linux-6.1.68" # This is a Long Term Support (LTS) one, from: https://www.kernel.org
 
-$ wget https://cdn.kernel.org/pub/linux/kernel/v5.x/${kernel_name}.tar.xz
-
-$ tar xvf ${kernel_name}.tar.xz
+$ wget https://cdn.kernel.org/pub/linux/kernel/v$(echo $kernel_name | cut -d "-" -f2 | cut -c1).x/${kernel_name}.tar.xz && tar xf ${kernel_name}.tar.xz
 
 $ cd ${kernel_name}
 
-$ sudo apt install build-essential dkms flex bison libncurses-dev
+$ sudo apt install -y build-essential dkms flex bison libncurses-dev
 
 $ make oldconfig
 
 $ make nconfig # starts a CLI interface to choose kernel options
 
-CONFIG_KGDB (Press F8 to search "KGDB"): "Kernel hacking" ---> "KGDB: kernel debugger" (by default, this enabled by a "*" in front of it)
-CONFIG_KGDB_SERIAL_CONSOLE (Press F8 to search "KGDB_SERIAL_CONSOLE") -"Kernel hacking" ---> "KGDB: kernel debugger" --> "KGDB: use kgdb over the serial console" (by default, this is enabled by a "*" in front of it)
-CONFIG_DEBUG_INFO: (Press F8 to search "DEBUG_INFO") "Kernel hacking" ---> "Compile-time checks and compiler options" ---> "Compile the kernel with debug info" (by default, this is enabled by a "*" in front of it)
+- CONFIG_KGDB - Yes (Press F8 to search "KGDB"): "Kernel hacking" ---> "KGDB: kernel debugger" (by default, this enabled by a "*" in front of it)
+- CONFIG_KGDB_SERIAL_CONSOLE - Yes (Press F8 to search "KGDB_SERIAL_CONSOLE") -"Kernel hacking" ---> "KGDB: kernel debugger" --> "KGDB: use kgdb over the serial console" (by default, this is enabled by a "*" in front of it)
+- CONFIG_DEBUG_INFO: - Yes (Press F8 to search "DEBUG_INFO") "Kernel hacking" ---> "Compile-time checks and compiler options" ---> "Compile the kernel with debug info" (by default, this is enabled by a "*" in front of it)
 
 Optional (Press F8 to search):
 CONFIG_FRAME_POINTER – Yes - - Allows you to more accurately construct stack back traces while debugging the kernel
-CONFIG_DEBUG_RODATA  - No - If the architecture supports this option, you should consider turning this off, as this prevents the use of software breakpoints because it marks the certain regions of the kernel memory space as read-only. Or you can use hardware break points in gdb, if you still want this option to be enabled.
+CONFIG_DEBUG_RODATA  - No (There's no such option in the `nconfig` menu. - If the architecture supports this option, you should consider turning this off, as this prevents the use of software breakpoints because it marks the certain regions of the kernel memory space as read-only. Or you can use hardware break points in gdb (which seems not working in VM), if you still want this option to be enabled. Ref: https://elinux.org/KDB
 
 Press F6 to save (to ".config")
 
@@ -38,13 +36,32 @@ Press F6 to save (to ".config")
 Kernel compilation
 --------------------
 
-$ sudo apt install libssl-dev libelf-dev
+$ sudo apt -y install libssl-dev libelf-dev
 
-$ make -j8
+$ CPU_NUM=$(cat /proc/cpuinfo | grep '^processor' | wc -l | awk '{print $1}'); make -j${CPU_NUM}
 
-$ sudo make modules_install -j8
+$ sudo make modules_install -j${CPU_NUM}
 
-$ make install
+$ sudo make install
+
+
+Change boot menuentry
+-----------------------
+
+Find the sequence of the newly installed kernel. The index starts from 0.
+
+$ grep -P '^\x09menuentry' /boot/grub/grub.cfg
+
+Change the `GRUB_DEFAULT` (in /etc/default/grub) to use the new kernel
+
+Active the change:
+
+$ sudo update-grub2
+
+** Note **
+
+For some Linux distribution, the newly installed kernel can only be entered when you choose "Advance" in the "Boot Menu". So in this case, the easiest way is to increase the "GRUB_TIMEOUT" in the /etc/default/grub and manually, interactively choose the correct kernel!!!
+
 
 Copy the linux build folder to development machine
 --------------------

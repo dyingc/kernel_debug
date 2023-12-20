@@ -1,0 +1,94 @@
+nokaslr in Target VM
+----------------------
+
+KASLR - 
+	Kernel Address space Layout Randomization
+	It is a technique implemented by operating system to prevent the attacker from finding out the address of
+	the functions
+
+kaslr is by default enabled in Linux Kernel. When it is enabled, 
+		the backtrace command will show ??
+		you cannot set breakpoints properly
+
+Solution: Disable kaslr
+	In order to disable kaslr, append "nokaslr" to the kernel command line parameters
+
+Value of `GRUB_CMDLINE_LINUX_DEFAULT` (in /etc/default/grub) is changed 
+From:
+------
+GRUB_CMDLINE_LINUX_DEFAULT="quiet splash kgdbwait kgdboc=ttyS0,115200"
+
+To:
+------
+GRUB_CMDLINE_LINUX_DEFAULT="quiet splash kgdbwait kgdboc=ttyS0,115200 nokaslr"
+
+Or
+
+GRUB_CMDLINE_LINUX_DEFAULT="splash kgdbwait kgdboc=ttyS0,115200 nokaslr"
+
+
+Take effect
+-------------
+
+$ sudo update-grub2
+$ sudo reboot
+
+
+Change
+---------
+
+Now, the `backtrace`, or `bt`, command in the `gdb` will show something like:
+
+```
+(gdb) target remote /dev/ttyS0
+Remote debugging using /dev/ttyS0
+0xffffffff8116e034 in vkdb_printf.cold () at kernel/debug/kdb/kdb_io.c:721
+721				printk("%s", kdb_buffer);
+(gdb) bt
+#0  0xffffffff8116e034 in vkdb_printf.cold () at kernel/debug/kdb/kdb_io.c:721
+#1  0xffffffff8116f1fb in kdb_rd (argc=<optimized out>, argv=<optimized out>) at kernel/debug/kdb/kdb_main.c:1859
+#2  kdb_rd (argc=<optimized out>, argv=<optimized out>) at kernel/debug/kdb/kdb_main.c:1838
+#3  0xffffffff8166b820 in alloc_agpphysmem_i8xx (type=<optimized out>, pg_count=<optimized out>) at drivers/char/agp/intel-gtt.c:998
+#4  intel_fake_agp_alloc_by_type (pg_count=18446683600573316528, type=150) at drivers/char/agp/intel-gtt.c:998
+#5  0xffffffff828df98d in check_ioapic_information () at drivers/iommu/amd_iommu_init.c:2381
+#6  early_amd_iommu_init () at drivers/iommu/amd_iommu_init.c:2543
+#7  state_next () at drivers/iommu/amd_iommu_init.c:2643
+#8  iommu_go_to_state (state=<optimized out>) at drivers/iommu/amd_iommu_init.c:2701
+#9  0xffffffff8100284a in variable_test_bit (addr=<optimized out>, nr=<optimized out>) at ./arch/x86/include/asm/bitops.h:332
+#10 cpumask_test_cpu (cpumask=<optimized out>, cpu=<optimized out>) at ./include/linux/cpumask.h:344
+#11 trace_initcall_start (func=<optimized out>) at ./include/trace/events/initcall.h:27
+#12 do_one_initcall (fn=0x0 <irq_stack_union>) at init/main.c:886
+#13 0xffffffff82883321 in ksys_unlink (pathname=<optimized out>) at ./include/linux/syscalls.h:1197
+#14 create_dev (dev=<optimized out>, name=<optimized out>) at init/do_mounts.h:19
+#15 md_run_setup () at init/do_mounts_md.c:297
+#16 0xffffffff81a34e1e in __kprobes_text_start () at ./include/asm-generic/getorder.h:25
+#17 0x0000000000000000 in ?? ()
+(gdb)
+```
+
+
+Breakpoint testing
+--------------------
+
+(gdb) target remote /dev/ttyS0
+Remote debugging using /dev/ttyS0
+kgdb_breakpoint () at kernel/debug/debug_core.c:1136
+1136		wmb(); /* Sync point after breakpoint */
+(gdb) b __x64_sys_read
+Note: breakpoint 1 also set at pc 0xffffffff812adb10.
+Breakpoint 2 at 0xffffffff812adb10: file fs/read_write.c, line 586.
+(gdb) c
+Continuing.
+[New Thread 253]
+[New Thread 252]
+[Switching to Thread 253]
+
+Thread 179 hit Breakpoint 1, __x64_sys_read (regs=0xffffc9000105ff58) at fs/read_write.c:586
+586	SYSCALL_DEFINE3(read, unsigned int, fd, char __user *, buf, size_t, count)
+(gdb) 
+
+
+Troubleshooting Breakpoint testing
+------------------------------------
+
+If you find that the breakpoint doesn't work, you should make sure the Target VM is indeed booted into the kernel you built - the Target VM should be matched with the `vmlinux` used in the dev VM.
