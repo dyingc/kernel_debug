@@ -7,6 +7,15 @@ It is three steps to debug the Linux Kernel with GDB:
         3. Use the GDB client to connect to the target via serial or network
 
 
+Pre-requisites
+--------------------
+
+From: https://wiki.ubuntu.com/Kernel/BuildYourOwnKernel
+
+$ sudo apt-get update && sudo apt-get build-dep linux
+$ sudo apt-get install -y libncurses-dev gawk flex bison openssl libssl-dev dkms libelf-dev libudev-dev libpci-dev libiberty-dev autoconf llvm build-essential
+
+
 Kernel Configuration
 --------------------
 
@@ -15,8 +24,6 @@ $ kernel_name="linux-6.1.68" # This is a Long Term Support (LTS) one, from: http
 $ wget https://cdn.kernel.org/pub/linux/kernel/v$(echo $kernel_name | cut -d "-" -f2 | cut -c1).x/${kernel_name}.tar.xz && tar xf ${kernel_name}.tar.xz
 
 $ cd ${kernel_name}
-
-$ sudo apt install -y build-essential dkms flex bison libncurses-dev
 
 $ make oldconfig
 
@@ -36,13 +43,17 @@ Press F6 to save (to ".config")
 Kernel compilation
 --------------------
 
-$ sudo apt -y install libssl-dev libelf-dev
-
 $ CPU_NUM=$(cat /proc/cpuinfo | grep '^processor' | wc -l | awk '{print $1}'); make -j${CPU_NUM}
 
 $ sudo make modules_install -j${CPU_NUM}
 
 $ sudo make install
+
+
+Troubleshooting
+--------------------
+
+If you hit error: `make[2]: *** No rule to make target 'debian/canonical-certs.pem', needed by 'certs/x509_certificate_list'.  Stop.` during the `make`, you need to edit your `.config` file to remove the values of "CONFIG_SYSTEM_TRUSTED_KEYS" and "CONFIG_SYSTEM_BLACKLIST_HASH_LIST" (to make the empty string as `""`). After this change, you might have to accept some config changes at the early phase of the `make`.
 
 
 Change boot menuentry
