@@ -54,6 +54,12 @@ $ grep -P '^\x09menuentry' /boot/grub/grub.cfg
 
 Change the `GRUB_DEFAULT` (in /etc/default/grub) to use the new kernel
 
+```
+# Choose the forth entry in the second submenu: Advanced --> newly built kernel
+GRUB_DEFAULT="1>4"
+GRUB_TIMEOUT=5
+```
+
 Active the change:
 
 $ sudo update-grub2
