@@ -1,0 +1,30 @@
+Magic Sysrq
+------------
+
+Consider a scenario, where you have sent "continue" command in gdb to target machine,  now you need to connect to the debugger(gdb).  There is no way now, you can achieve it from development machine/host machine.
+
+With the help of magic sysrq sequence, the target machine can enter debugger mode
+
+To use this feature, your kernel should be compiled with `CONFIG_MAGIC_SYSRQ=y` feature (by default, yes: cat /boot/config-$(uname -r) | grep MAGIC_SYSRQ)
+
+$ echo 'g' | sudo tee /proc/sysrq-trigger 
+
+Do this on the Target VM and the Target VM will "hang" and see something like the following from the dev VM kgdb session:
+
+```
+[Switching to Thread 3499]
+kgdb_breakpoint () at kernel/debug/debug_core.c:1136
+1136		wmb(); /* Sync point after breakpoint */
+```
+
+kgdb_breakpoint
+-----------------
+
+In the kernel module, you can use:
+
+```
+kgdb_breakpoint();
+```
+
+to return the debug state. You can check the `hello.c` in the folder.
+
