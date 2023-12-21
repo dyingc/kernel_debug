@@ -1,2 +1,0 @@
-What happens if I modify the kernel code and load the new image?
------------------------------------------------------------------
