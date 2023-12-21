@@ -11,11 +11,11 @@ Now if you want to enable the KGDB, run the below commands on the target machine
 
 Step 1: Specify the serial port, plus baud rate to the kgdboc
 
-# echo "ttyS0,115200" > /sys/module/kgdboc/parameters/kgdboc
+$ echo "ttyS0,115200" | sudo tee /sys/module/kgdboc/parameters/kgdboc # Note: if this is the second Target, use "/dev/ttyS1" if it's using "com2" (\\.\pipe\com2) in the VM setting.
 
 Step 2: Run the Sysrq magic sequence
 
-# echo g > /proc/sysrq-trigger
+$ echo g | sudo tee /proc/sysrq-trigger
 
 
 Dev VM side
@@ -24,5 +24,5 @@ Dev VM side
 On the Host/Dev machine it is the same set of commands
 
 Step1: $ sudo gdb ./vmlinux
-Step2: (gdb) target remote /dev/ttyS0
+Step2: (gdb) target remote /dev/ttyS0 # Note: if the Target is the 2nd one, use "/dev/ttyS1" if it's using "com2" (\\.\pipe\com2) in the VM setting.
 
