@@ -1,4 +1,7 @@
-#obj-m += kprobe_read.o
+# Enable debug symbols
+ccflags-y := -g
+
+# Object files to be built
 obj-m += process_info.o kprobe_bind.o
 
 all:
