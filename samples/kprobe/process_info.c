@@ -17,7 +17,7 @@ struct process_info get_process_info(void) {
         return info;
     }
 
-#ifdef CONFIG_MMU
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,8,0) // Replace with the version where mmap_lock was introduced
     if (down_read_trylock(&mm->mmap_lock) == 0) // Updated to use mmap_lock
         return info;
 #else
@@ -48,7 +48,8 @@ struct process_info get_process_info(void) {
     }
 
 out_unlock:
-#ifdef CONFIG_MMU
+//#ifdef CONFIG_MMU
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,8,0) // Replace with the version where mmap_lock was introduced
     up_read(&mm->mmap_lock);
 #else
     up_read(&mm->mmap_sem);

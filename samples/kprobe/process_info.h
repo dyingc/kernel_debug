@@ -6,6 +6,8 @@
 #include <linux/fs.h>
 #include <linux/slab.h> // For kmalloc and kfree
 #include <linux/sched.h> // For 'current' and other process-related structures
+#include <linux/version.h>
+#include <linux/uaccess.h> // For copy_from_user
 
 // struct to hold process information
 struct process_info {

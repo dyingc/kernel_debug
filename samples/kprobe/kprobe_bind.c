@@ -8,6 +8,7 @@
 #include <linux/sched/signal.h>  // for for_each_process - to get full command line
 #include <linux/mm_types.h>      // for mm_struct - to get full command line
 #include <linux/fs.h>            // for file and path structures - to get full command line
+#include <linux/kgdb.h>		 // for kgdb_breakpoint
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Eric Dong");
@@ -30,6 +31,8 @@ static int handler_pre(struct kprobe *p, struct pt_regs *regs) { // the `pt_regs
     struct sockaddr_storage address;
     unsigned short port;
     struct process_info p_info = get_process_info();
+
+    // kgdb_breakpoint();
 
     //printk(KERN_INFO "Before %s: sockfd=%lu, addr=%px, addrlen=%lu\n", symbol_name, regs->di, addr, regs->dx);
 
