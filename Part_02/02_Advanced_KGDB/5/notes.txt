@@ -1,6 +1,0 @@
-Debugging out of tree modules
------------------------------
-
-You need to copy the kernel module from target machine to development machine
-
-
