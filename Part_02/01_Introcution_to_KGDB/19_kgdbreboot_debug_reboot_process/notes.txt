@@ -1,0 +1,53 @@
+kgdbreboot
+-------------
+
+If you want your debugger to run, when the target machine is going to reboot (aka, to debug your Target VM's reboot process), you can use "kgdbreboot" parameter to kernel command line. This means, the following are run from the Target VM which controls the gdb session on the Dev VM.
+
+
+Three value options
+---------------------
+
+There are three values to this variable. The default value is 0.
+
+0 		Detach message is sent to gdb. Gdb exits the debugging (when the Target VM starts to reboot), and you will get the following message.
+		[Inferior 1 (Remote target) exited with code 01]
+
+1		GDB Provides you option to debug the Target VM's reboot process
+
+-1		No notification is sent to gdb debugger
+
+
+Behavior
+----------
+
+For example, if you set it to "1" and "reboot" your Target VM, the reboot process will in fact be trapped by a breakpoint and from the Dev VM's gdb remote session, you can see something like:
+
+```
+Thread 13 received signal SIGTRAP, Trace/breakpoint trap.                                     
+[Switching to Thread 1]
+kgdb_breakpoint () at /home/dyingc/linux-6.1.68/debug_core.c:1222
+1222    in /home/dyingc/linux-6.1.68/debug_core.c
+(gdb) bt
+#0  kgdb_breakpoint () at /home/dyingc/linux-6.1.68/debug_core.c:1222
+... ... ... ...
+#9  __x64_sys_reboot (regs=<optimized out>) at /home/dyingc/linux-6.1.68/reboot.c:701
+#10 0xffffffff81ee317c in do_syscall_x64 (
+    nr=<error reading variable: dwarf2_find_location_expression: Corrupted DWARF expression.>, regs=<error reading variable: dwarf2_find_location_expression: Corrupted DWARF expression.>)
+    at /home/dyingc/linux-6.1.68/common.c:51
+#11 do_syscall_64 (regs=0xffffc90000013f58, nr=<optimized out>)
+    at /home/dyingc/linux-6.1.68/common.c:81
+```
+
+Here you see the "__x64_sys_reboot" is blocked by the "kgdb_breakpoint" and now you can debug the reboot process of the Target VM.
+
+
+Two enable-options
+--------------------
+
+If you want to enable this feature at runtime instead of adding kgdbreboot at commandline, you can use sysfs.
+
+echo -1 > /sys/module/debug_core/parameters/kgdbreboot
+echo 0 > /sys/module/debug_core/parameters/kgdbreboot
+echo 1 > /sys/module/debug_core/parameters/kgdbreboot 			
+
+Or, you can use the /etc/default/grub (do not forget to run `sudo update grub2` afterwards)
