@@ -15,7 +15,7 @@ debug: all
 	sudo insmod process_info.ko 
 	sudo insmod kprobe_bind.ko
 	sudo cat /sys/module/process_info/sections/.text /sys/module/kprobe_bind/sections/.text
-	scp *.c *.h *.ko dev:kprobe
+	scp *.c *.h *.ko dev:$(PWD)
 clean:
 	make -C $(KDIR) M=$(PWD) clean
 
