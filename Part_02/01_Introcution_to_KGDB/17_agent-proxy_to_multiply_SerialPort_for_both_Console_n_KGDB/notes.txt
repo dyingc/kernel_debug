@@ -1,0 +1,95 @@
+agent proxy
+-------------
+
+If you have only one serial port and want to use for both console and KGDB then you have to go with agent proxy
+
+agent-proxy is nothing more than a 
+
+`tty` → `TCP` connection mux 
+
+that allows you to connect more than one client application to a single tty. By using it, we can run the serial port client and gdb process simultaneously.
+
+The syntax is:
+
+agent-proxy CONSOLE_PORT^DEBUG_PORT IP_ADDR PORT
+
+
+Concept
+---------
+
+On the Target VM:
+
+			------------------
+			|Target system	 |
+			|with serial port|
+			------------------
+	    			  |
+		    		  V
+			-----------------
+			|agent-proxy	  |
+			-----------------
+			  /		          \
+			 /		           \
+			/		              \	
+	----------------	---------
+	|For		        |	|	      |
+	|console access |	|gdb	  |
+	|<port1>        |	|<port2>|
+	----------------	---------
+
+
+Building Agent Proxy (Target VM)
+----------------------------------
+
+Step 1: Clone the repository
+
+$ git clone http://git.kernel.org/pub/scm/utils/kernel/kgdb/agent-proxy.git
+
+Step 2: Build the source
+
+$ cd agent-proxy ; make
+
+
+Running Agent Proxy (Target VM)
+---------------------------------
+
+Open a  new terminal and run the following command: 
+
+$ sudo ./agent-proxy 5550^5551 0 /dev/ttyS0,115200 # 0 means localhost
+
+$ ss -naltupe | grep 555[01]
+tcp    LISTEN   0        1                                      0.0.0.0:5550                  0.0.0.0:*             ino:46577 sk:c <->
+tcp    LISTEN   0        1                                      0.0.0.0:5551                  0.0.0.0:*             ino:46578 sk:d <->
+
+Note, you should use: `/dev/ttyUSB0` if you are using USB to serial device node.
+
+
+Which port is for which
+-------------------------
+
+In the Target VM, we have the following configured in the "/etc/default/grub" (and then `sudo update grub2`):
+
+GRUB_CMDLINE_LINUX_DEFAULT="splash nokaslr console=ttyS0,115200 kgdboc=ttyS0,115200 kgdbwait"
+
+Usually, the first one (here, port 5550) is for "console" and the second one (here, port 5551) is for "KGDB". However, I did notice that sometimes this order won't be guranteed. You can try both to ensure connect to the correct one.
+
+
+Connect to console
+--------------------
+
+$ telnet localhost 5550 # Using this way we actually "connect" to the Target VM's console and can interact with the Target VM's console
+
+
+KGDB Connect (Target VM)
+--------------------------
+
+$ sudo gdb ./vmlinux
+(gdb) target remote localhost:5551
+
+
+Make it automated
+-------------------
+
+On the Dev VM, I setup a startup service (/etc/init.d/agent-proxy.sh and can be started as: `sudo systemctl start agent-proxy`). This service uses 5550/5551 for /dev/ttyS0 and 5552/5553 for /dev/ttyS1.
+
+Note: noticed that sometimes you might have to restart the "agent-proxy.service" if the connection doesn't work.

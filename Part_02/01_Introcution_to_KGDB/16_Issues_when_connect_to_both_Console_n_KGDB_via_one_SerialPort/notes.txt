@@ -1,0 +1,36 @@
+What is "Console"
+-------------------
+
+Here the "console" means the "screen" you see as if you're sitting in front of a real computer.
+
+
+Enable console and KGDB at same serial port
+---------------------------------------------
+
+In the Target VM's `/etc/default/grub`, append the following to `GRUB_CMDLINE_LINUX_DEFAULT`:
+
+console=ttyS0,115200 kgdboc=ttyS0,115200 kgdbwait
+
+So the value becomes:
+
+GRUB_CMDLINE_LINUX_DEFAULT="splash nokaslr console=ttyS0,115200 kgdboc=ttyS0,115200 kgdbwait"
+
+And then, don't forget to run: `sudo update-grub2`
+
+
+Connect to console (Target VM)
+--------------------------------
+
+From Dev VM, run: `sudo screen /dev/ttyS0 11520`
+
+Now, you even see the console information when the Target VM is rebooted.
+
+
+Issue
+-------
+
+Now, the issue is, a serial port can be used for only once. So if this `/dev/ttyS0` has been used for console, it usually can't be used for KGDB (unless you open another serial port from the Virtualbox console).
+
+Please refer to the next notes about how to multiply/proxy the single serial port for different purposes.
+
+
