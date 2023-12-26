@@ -1,0 +1,29 @@
+Kernel Debugging using GDB
+---------------------------
+
+User space processes can be debugged using gdb. With gdb you can
+	single-step,
+	stop,
+	resume,
+	put break-points,
+	inspect memory and variables,
+	look through call stack information
+
+What if we can use gdb on running Linux Kernel.
+
+
+Problem:
+----------
+
+How can a gdb debug running kernel as it is just a user space process.
+
+
+Solution:
+----------
+
+Client/Server Architecture
+User space programs can be debugged remotely using the combination of gdbserver on the target machine and gdb on the host machine/development machine.
+
+The Linux kernel has a GDB Server implementation called KGDB. It communicates with a GDB client over network or serial port connection
+
+

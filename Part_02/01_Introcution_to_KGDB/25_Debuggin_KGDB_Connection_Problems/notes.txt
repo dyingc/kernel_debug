@@ -1,0 +1,16 @@
+Debugging Problems
+------------------
+
+If you are having problems connecting or something is going seriously wrong while debugging, you can enable remote debug.
+
+
+Dev VM
+--------
+
+(gdb) set debug remote 1
+(gdb) target remote /dev/ttyS0 # Because we're in "debug" mode, here we can see a lot of packet sending/receiving and ACK lines indicating if the packets successfully sent or received
+(gdb) <any_gdb_command> # We can see a lot of packet sending/receiving and ACK lines indicating if the packets successfully sent or received
+(gdb) set debug remote 0 # default, disable the debug mode so that those packet sending/receiving won't come out
+
+
+
