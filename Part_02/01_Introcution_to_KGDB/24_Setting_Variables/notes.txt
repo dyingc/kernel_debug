@@ -1,34 +1,32 @@
-Printing Variables
---------------------
-(gdb) p jiffies
-(gdb) p modprobe_path
-(gdb) p nr_cpu_ids
-(gdb) p arp_tbl
-(gdb) p ftrace_enabled
-
 Setting variables
 -----------------
 
 set var=<value>
 
-panic_on_oops:
---------------
+
+panic_on_oops
+---------------
+
 Controls the kernel's behavior when an oops or BUG is encountered
 
-	0: try to continue operation
+	0: try to continue operation (default)
 	1: panic immediately.
 
 (gdb) p panic_on_oops
 (gdb) set panic_on_oops=1
 (gdb) p panic_on_oops
 
-panic_on_warn:
--------------
+
+panic_on_warn
+---------------
 
 Calls panic() in the WARN() path when set to 1.
+
 	0: only WARN(), default behaviour.
 	1: call panic() after printing out WARN() location.
 
 (gdb) p panic_on_warn
 (gdb) set panic_on_warn=1
 (gdb) p panic_on_warn
+
+

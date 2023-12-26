@@ -1,0 +1,11 @@
+Printing Variables
+--------------------
+(gdb) p jiffies
+(gdb) p modprobe_path # Path of `modprobe`
+(gdb) p nr_cpu_ids # Number of CPUs
+(gdb) p arp_tbl # the ARP table
+(gdb) p ftrace_enabled
+
+Note: all the above exist in the output of: `cat /proc/kallsyms | awk '{if ($2=="B" || $2=="D") print $0;}'` ("B" means the symbol is in the BSS data section while "D" means the symbol is in the initialized data section)
+
+
