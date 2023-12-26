@@ -3,10 +3,10 @@ What happens if I modify the kernel code and load the new image?
 
 1. Copy the hello.c to the Target VM
 2. In the Target VM
-  2.1 Copy the hello.c to the `kernel` folder inside the kernel-to-be-built. eg: ~/linux-5.0/kernel
+  2.1 Copy the hello.c to the `kernel` folder inside the kernel-to-be-built. eg: /usr/src/linux-5.4.0/kernel
   2.2 Modify the `kernel/Makefile` to add:
     obj-y += hello.o
-  2.3 Build the kernel (`make`)
+  2.3 Build the kernel (`cd /usr/src/linux-5.4.0; make -j<#_of_cpu_cores>`)
   2.4 As we didn't change any module (we directly add the `hello` to the kernel itself, there's no need to run `make modules_install`
-  2.5 Install the new, updated kernel: sudo make install
+  2.5 Install the new, updated kernel: `sudo make install`
   2.6 You need to re-copy the `vmlinux` as the kernel is changed (without this re-copy, similar issue happens as you haven't correctly chosen the right kernel to start)

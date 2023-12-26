@@ -1,0 +1,45 @@
+What happens on kernel Panic
+------------------------------
+
+When a kernel panic occurs, then something has gone seriously wrong and the kernel automatically enters debugger mode.
+
+From here you can 
+	look at memory,
+	do a traceback,
+	examine registers, and
+	do other operations to find out more about the state of the system and debug the problem.
+
+
+Build new kernel with the customized source code
+--------------------------------------------------
+
+1. Copy the hello.c to the Target VM
+2. In the Target VM
+  2.1 Copy the hello.c to the `kernel` folder inside the kernel-to-be-built. eg: /usr/src/linux-5.4.0/kernel
+  2.2 Modify the `kernel/Makefile` to add:
+    obj-y += hello.o
+  2.3 Build the kernel (`cd /usr/src/linux-5.4.0; make -j<#_of_cpu_cores>`)
+  2.4 As we didn't change any module (we directly add the `hello` to the kernel itself, there's no need to run `make modules_install`
+  2.5 Install the new, updated kernel: `sudo make install`
+  2.6 You need to re-copy the `vmlinux` as the kernel is changed (without this re-copy, similar issue happens as you haven't correctly chosen the right kernel to start)
+  2.7 Copy the hello.c to the Dev VM, exactly the same folder as it is in the Target VM's kernel-to-be-built/kernel (eg: /usr/src/linux-5.4.0/kernel on the Dev VM). Without this, you can debug the hello.c in the gdb session.
+Note, if you want to see step through the `hello.c`, you need not only copy the new vmlinux but also the source code hello.c to the same folder to Dev VM (from Target VM).
+
+Use of `frame` command
+------------------------
+
+In `gdb`, you can go to different "stack" (of the `backtrace`) using the `frame <id_of_stack>`
+
+For example:
+
+(gdb) bt
+#0  oom_kill_process (oc=0xffffc90001337c80, message=0xffffffff823775f2 "Out of memory") at mm/oom_kill.c:952
+#1  0xffffffff8122929c in out_of_memory (oc=<optimized out>) at mm/oom_kill.c:1111
+#2  out_of_memory (oc=0xffffc90001337c80) at mm/oom_kill.c:1043
+... ... ... ...
+(gdb) frame 2
+#2  out_of_memory (oc=0xffffc90001337c80) at mm/oom_kill.c:1043
+
+From here, you can use `list` command to list the source code around `mm/oom_kill.c:1043`
+
+
