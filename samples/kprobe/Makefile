@@ -4,15 +4,24 @@ obj-m += $(km_name).o
 $(km_name)-objs := process_info.o kprobe_bind.o
 
 kernel_headers := /lib/modules/$(shell uname -r)/build
+
+# not to optimize the code unless it's debug-non-related, to make debug easier
+ccflags-y += -Og
+# not to optimize the code at all
+# ccflags-y += -O0
+
+# EXTRA_CFLAGS is a more general option while `ccflags-y` is typically usef for KM
+# EXTRA_CFLAGS += -Og
+
 all:
 	#./prepare_kernel.sh
 	make -C $(kernel_headers) M=$(PWD) modules
-	sudo insmod $(km_name).ko
+	#sudo insmod $(km_name).ko
 
 clean:
 	make -C $(kernel_headers) M=$(PWD) clean
 	rm -f bind_test 2>/dev/null
-	sudo rmmod $(km_name) 2>/dev/null
+	#sudo rmmod $(km_name) 2>/dev/null
 
 bind_test:
 	gcc -o bind_test bind_test.c

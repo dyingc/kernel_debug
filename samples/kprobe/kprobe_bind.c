@@ -90,6 +90,7 @@ static int __init kprobe_init(void) {
 static void __exit kprobe_exit(void) {
     unregister_kprobe(&kp);
     printk(KERN_INFO "kprobe at %p unregistered\n", kp.addr);
+    //kgdb_breakpoint();
 }
 
 module_init(kprobe_init)
