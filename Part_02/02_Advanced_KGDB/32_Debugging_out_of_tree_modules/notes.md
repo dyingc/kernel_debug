@@ -1,5 +1,4 @@
-Debugging out of tree modules
------------------------------
+# Debugging out of tree modules
 
 You need to do to add the debug symbols of the new modules into the `gdb` session:
 
