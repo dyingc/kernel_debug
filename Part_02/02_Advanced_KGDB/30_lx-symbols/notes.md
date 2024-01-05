@@ -4,7 +4,7 @@ The `lx-symbols` command is particularly important if you want to debug a kernel
 
 Use the `lx-symbols` command to load symbols for **all** modules currently loaded in the kernel.
 
-If debugging an `out-of-tree` module, use the first argument to provide the path of the root directory to search.
+If debugging an `out-of-tree` module, use the first argument to provide the **path** of the root directory to search.
 
 
 # `lx_current`
