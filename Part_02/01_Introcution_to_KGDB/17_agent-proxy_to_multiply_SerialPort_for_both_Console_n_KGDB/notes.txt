@@ -71,7 +71,7 @@ In the Target VM, we have the following configured in the "/etc/default/grub" (a
 
 GRUB_CMDLINE_LINUX_DEFAULT="splash nokaslr console=ttyS0,115200 kgdboc=ttyS0,115200 kgdbwait"
 
-Usually, the first one (here, port 5550) is for "console" and the second one (here, port 5551) is for "KGDB". However, I did notice that sometimes this order won't be guranteed. You can try both to ensure connect to the correct one.
+It's interesting that the "order" of the two connections, console and KGDB (kgdboc), is NOT guaranteed. You have to try both to ensure the correct connection.
 
 
 Connect to console
