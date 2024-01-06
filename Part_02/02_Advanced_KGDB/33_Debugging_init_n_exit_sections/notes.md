@@ -12,7 +12,7 @@ This function is defined in `kernel/module.c`:
 ```C
 static noinline int do_init_module(struct module *mod)
 {
-  int ret = 0; 
+  int ret = 0;
   struct mod_initfree *freeinit;
 
   freeinit = kmalloc(sizeof(*freeinit), GFP_KERNEL);
@@ -32,7 +32,7 @@ static noinline int do_init_module(struct module *mod)
   /* Start the module */
   if (mod->init != NULL)
     ret = do_one_initcall(mod->init);
-  if (ret < 0) { 
+  if (ret < 0) {
     goto fail_free_freeinit;
   }
 ```
@@ -47,7 +47,7 @@ int __init_or_module do_one_initcall(initcall_t fn)
 {
   int count = preempt_count();
   char msgbuf[64];
-  int ret; 
+  int ret;
 
   if (initcall_blacklisted(fn))
     return -EPERM;
@@ -56,7 +56,7 @@ int __init_or_module do_one_initcall(initcall_t fn)
   ret = fn();
   do_trace_initcall_finish(fn, ret);
 
-  msgbuf[0] = 0; 
+  msgbuf[0] = 0;
 
   if (preempt_count() != count) {
     sprintf(msgbuf, "preemption imbalance ");
@@ -69,7 +69,7 @@ int __init_or_module do_one_initcall(initcall_t fn)
   WARN(msgbuf[0], "initcall %pS returned with %s\n", fn, msgbuf);
 
   add_latent_entropy();
-  return ret; 
+  return ret;
 }
 ```
 
@@ -93,11 +93,11 @@ We should add breakpoint right before `do_on_initcall` function, which is line #
 ```bash
 (gdb) info function do_init_module
 All functions matching regular expression "do_init_module":
-                 
+
 File kernel/module.c:
 3561:   static int do_init_module(struct module *);
 (gdb) b kernel/module.c:3582
-Breakpoint 2 at 0xffffffff811526dd: file kernel/module.c, line 3582.                                                                         
+Breakpoint 2 at 0xffffffff811526dd: file kernel/module.c, line 3582.
 (gdb) c
 Continuing.
 ```
@@ -116,12 +116,16 @@ Note, the `mod->init=0xffffffffc0293000` indicates the address of the module.
 Now, we can use the `add-symbol-file` command to add the symbols:
 
 ```bash
-(gdb) add-symbol-file ~/udemy/kernel/UdemyCourseKernelDebug/samples/kprobe/mon_bind.ko 0xffffffffc0293000                                    
+(gdb) remove-symbol-file ~/udemy/kernel/UdemyCourseKernelDebug/samples/kprobe/mon_bind.ko
+# The above `remove-symbol-file` is to remove the old symbols, if exists
+(gdb) add-symbol-file ~/udemy/kernel/UdemyCourseKernelDebug/samples/kprobe/mon_bind.ko 0xffffffffc0293000
 add symbol table from file "/home/dyingc/udemy/kernel/UdemyCourseKernelDebug/samples/kprobe/mon_bind.ko" at
         .text_addr = 0xffffffffc0293000
 (y or n) y
 Reading symbols from /home/dyingc/udemy/kernel/UdemyCourseKernelDebug/samples/kprobe/mon_bind.ko...
 ```
+
+Note, after the module is fully inserted, you can find this exactly same address from `/sys/module/<KM>/sections.text`.
 
 Thereafter you should then be able to set a breakpoint in the module's init function.
 
@@ -143,6 +147,55 @@ warning: (Internal error: pc 0xffffffffffffdffc in read in psymtab, but not in s
 warning: (Internal error: pc 0xffffffffffffdffc in read in psymtab, but not in symtab.)
 
 Breakpoint 5 at 0x3c: /home/dyingc/udemy/kernel/UdemyCourseKernelDebug/samples/kprobe/kprobe_bind.c:kprobe_init. (3 locations)
+```
+
+
+## Troubleshooting
+
+
+### Breakpoint doesn't work
+
+
+#### Symptom
+
+- The breakpoint is somehow set to `0x3c`:
+
+```bash
+(gdb) p mod->init
+$4 = (int (*)(void)) 0xffffffffc0462000
+(gdb) add-symbol-file /home/dyingc/udemy/kernel/UdemyCourseKernelDebug/samples/kprobe/kb.ko 0xffffffffc0462000
+add symbol table from file "/home/dyingc/udemy/kernel/UdemyCourseKernelDebug/samples/kprobe/kb.ko" at
+        .text_addr = 0xffffffffc0462000
+(y or n) y
+Reading symbols from /home/dyingc/udemy/kernel/UdemyCourseKernelDebug/samples/kprobe/kb.ko...
+(gdb) b /home/dyingc/udemy/kernel/UdemyCourseKernelDebug/samples/kprobe/kb.c:kb_init
+Breakpoint 5 at 0x3c: file /home/dyingc/udemy/kernel/UdemyCourseKernelDebug/samples/kprobe/kb.c, line 7.
+```
+
+
+#### Analysis
+
+- After the module is fully inserted, there's no `.text` section under `/sys/module/<km>/sections` but a .text.unlikely`
+
+```bash
+dyingc@ubuntu19:~/udemy/kernel/UdemyCourseKernelDebug/samples/kprobe$ sudo cat /sys/module/kb/sections/.text.unlikely
+0xffffffffc0462000
+```
+
+This is because, sometimes the Linux kernel tries to `optimize` the code and put some or all your module's code into the `.text.unlikely` section, which is used for code that is unlikely to be executed.
+
+
+#### Solution
+
+Change the `Makefile` to indicate `ccflags-y += -Og` or `ccflags-y += -O0`
+
+- `ccflags-y += -Og` - not to optimize the code unless it's debug-non-related, to make debug easier
+- `ccflags-y += -O0` - not to optimize the code at all
+- Rebuild the module
+
+```bash
+dyingc@ubuntu19:~/udemy/kernel/UdemyCourseKernelDebug/samples/kprobe$ sudo cat /sys/module/kb/sections/.text
+0xffffffffc04b4000
 ```
 
 
