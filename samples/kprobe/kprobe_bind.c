@@ -71,7 +71,8 @@ static void handler_post(struct kprobe *p, struct pt_regs *regs, unsigned long f
     // Access registers using regs pointer if needed
 }
 
-static int __init kprobe_init(void) {
+// We need to remove the "__init" direct to enable the "init" func debug
+static int kprobe_init(void) {
     int ret;
     kp.pre_handler = handler_pre;
     kp.post_handler = handler_post;
