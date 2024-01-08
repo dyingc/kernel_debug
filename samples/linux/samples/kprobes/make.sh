@@ -1,3 +1,3 @@
 #!/bin/bash
 
-make && ssh dev "rm -f ~/udemy/kernel/UdemyCourseKernelDebug/samples/linux/samples/kprobes/*"; scp -r * dev:~/udemy/kernel/UdemyCourseKernelDebug/samples/linux/samples/kprobes/
+make && ssh dev "rm -f ${PWD}/*"; scp -r * dev:${PWD}/

@@ -58,4 +58,4 @@ out_unlock:
     return info;
 }
 
-EXPORT_SYMBOL_GPL(get_process_info);
+EXPORT_SYMBOL_GPL(get_process_info); // The "EXPORT_SYMBOL_GPL" has to be right after the definition of the function-to-be-exported
