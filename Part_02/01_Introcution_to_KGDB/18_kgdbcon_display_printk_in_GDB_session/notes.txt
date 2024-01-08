@@ -11,14 +11,15 @@ There are two ways to activate this feature:
 
 2. Use sysfs before configuring an I/O driver::
 
-        echo 1 > /sys/module/debug_core/parameters/kgdb_use_con
+        echo 1 | sudo tee /sys/module/debug_core/parameters/kgdb_use_con
 
-Note: If you do this after you configure the kgdb I/O driver, the setting will not take effect until the next point the I/O is reconfigured.
+Note:
+- If you do this after you configure the kgdb I/O driver, the setting will not take effect until the next point the I/O is reconfigured (disconnect the kGDB session or you'll see "kgdboc: Cannot reconfigure while KGDB is connected." in the kernel log. But better to restart both the Target VM and Dev VM).
 
 Important Point: You cannot use kgdboc + kgdbcon on a tty that is an active system console. An example of incorrect usage is::
         console=ttyS0,115200 kgdboc=ttyS0 kgdbcon
 
-So, you need to remote the "console=ttyS0,115200" from the /etc/default/grub's `GRUB_CMDLINE_LINUX_DEFAULT` (do not forget to run `sudo update grub2`). The remaining items might look like:
+So, you need to remove the "console=ttyS0,115200" from the /etc/default/grub's `GRUB_CMDLINE_LINUX_DEFAULT` (do not forget to run `sudo update grub2`). The remaining items might look like:
 
 Before:
 --------
