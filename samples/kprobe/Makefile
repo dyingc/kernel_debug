@@ -5,12 +5,15 @@ $(km_name)-objs := process_info.o kprobe_bind.o
 
 kernel_headers := /lib/modules/$(shell uname -r)/build
 
-# not to optimize the code unless it's debug-non-related, to make debug easier
-ccflags-y += -Og
-# not to optimize the code at all
-# ccflags-y += -O0
+# Enable debug symbols
+# ccflags-y := -g
 
-# EXTRA_CFLAGS is a more general option while `ccflags-y` is typically usef for KM
+# not to optimize the code unless it's debug-non-related, to make debug easier
+# ccflags-y += -Og
+# not to optimize the code at all and enable debug symbols
+ccflags-y := -g -O0
+
+# EXTRA_CFLAGS is a more general option while `ccflags-y` is typically used for KM
 # EXTRA_CFLAGS += -Og
 
 all:
