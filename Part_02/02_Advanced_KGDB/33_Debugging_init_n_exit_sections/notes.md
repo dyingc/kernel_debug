@@ -193,7 +193,7 @@ This is because, sometimes the Linux kernel tries to `optimize` the code and put
 
 #### Solution
 
-Change the `Makefile` to indicate `ccflags-y += -Og` or `ccflags-y += -O0`
+Change the `Makefile` to indicate `ccflags-y += -Og` or `ccflags-y += -g -O0`
 
 - `ccflags-y += -Og` - not to optimize the code unless it's debug-non-related, to make debug easier
 - `ccflags-y += -O0` - not to optimize the code at all
