@@ -1,5 +1,4 @@
-Temporary Breakpoints
------------------------
+# Temporary Breakpoints
 
 A temporary breakpoint only stops the execution of the program once.
 
@@ -9,7 +8,9 @@ You can set a temporary breakpoint with the following command:
 
 tbreak [LOCATION]
 
+```bash
 (gdb) tbreak cmdline_proc_show
+```
 
 
 
