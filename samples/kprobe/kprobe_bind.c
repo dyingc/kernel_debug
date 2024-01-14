@@ -8,11 +8,14 @@
 #include <linux/sched/signal.h>  // for for_each_process - to get full command line
 #include <linux/mm_types.h>      // for mm_struct - to get full command line
 #include <linux/fs.h>            // for file and path structures - to get full command line
-#include <linux/kgdb.h>		 // for kgdb_breakpoint
+#include <linux/kgdb.h>         // for kgdb_breakpoint
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Eric Dong");
 MODULE_DESCRIPTION("Monitor the __sys_bind system call");
+
+char *mon_app_name = "test_bind";
+module_param(mon_app_name, charp, S_IRUGO); // Makes 'mon_app_name' a read-only module parameter for userspace.
 
 /**
  * Note, this one add pre and post hook to system call "bind".
@@ -32,6 +35,10 @@ static int handler_pre(struct kprobe *p, struct pt_regs *regs) { // the `pt_regs
     unsigned short port;
     struct process_info p_info = get_process_info();
 
+		pr_info("%s (%d): mon_app_name = \"%s\", p_info.comm = \"%s\"\n", __FUNCTION__, __LINE__, mon_app_name, p_info.comm);
+    if (strcmp(p_info.comm, mon_app_name) != 0) // Skip the following code if the current process is not the one we're interested in
+        goto out;
+
     // kgdb_breakpoint();
 
     //printk(KERN_INFO "Before %s: sockfd=%lu, addr=%px, addrlen=%lu\n", symbol_name, regs->di, addr, regs->dx);
@@ -48,7 +55,7 @@ static int handler_pre(struct kprobe *p, struct pt_regs *regs) { // the `pt_regs
     if (address.ss_family == AF_INET) {
         struct sockaddr_in *addr_in = (struct sockaddr_in *)&address;
         port = ntohs(addr_in->sin_port);
-        printk(KERN_INFO "Binding IPv4 (sockfd: %lu): %pI4:%u - PID: %d, Command: %s (%s)\n", sockfd, &addr_in->sin_addr.s_addr, port, p_info.pid, p_info.comm, p_info.cmdline);
+        printk(KERN_INFO "Binding IPv4 (sockfd: %lu): %pI4:%u - PID: %d, Command: %s (%s)\n", sockfd, &addr_in->sin_addr.s_addr, port, p_info.pid, p_info.comm, p_info.cmdline); // You can set breakpoint here and output anything you want. However, in order not to trigger Oops, you have to: 1. delete the breakpoint. 2. Do NOT use "n" or "s", rather, you should use "c" to directly continue
     } else if (address.ss_family == AF_INET6) {
         struct sockaddr_in6 *addr_in6 = (struct sockaddr_in6 *)&address;
         port = ntohs(addr_in6->sin6_port);
@@ -72,7 +79,11 @@ static void handler_post(struct kprobe *p, struct pt_regs *regs, unsigned long f
 }
 
 // We need to remove the "__init" direct to enable the "init" func debug
+#ifdef DEBUG_INIT
 static int kprobe_init(void) {
+#else
+static int __init kprobe_init(void) {
+#endif
     int ret;
     kp.pre_handler = handler_pre;
     kp.post_handler = handler_post;
@@ -88,7 +99,11 @@ static int kprobe_init(void) {
     return 0;
 }
 
+#ifdef DEBUG_EXIT
+static void kprobe_exit(void) {
+#else
 static void __exit kprobe_exit(void) {
+#endif
     unregister_kprobe(&kp);
     printk(KERN_INFO "kprobe at %p unregistered\n", kp.addr);
     //kgdb_breakpoint();

@@ -13,6 +13,12 @@ kernel_headers := /lib/modules/$(shell uname -r)/build
 # not to optimize the code at all and enable debug symbols
 ccflags-y := -g -O0
 
+# For debug init or exit function, use: `make DEBUG_INIT=1`, else, use: `make`
+ifdef DEBUG_INIT
+ccflags-y += -DDEBUG_INIT
+ccflags-y += -DDEBUG_EXIT
+endif
+
 # EXTRA_CFLAGS is a more general option while `ccflags-y` is typically used for KM
 # EXTRA_CFLAGS += -Og
 
@@ -20,7 +26,8 @@ all:
 	#./prepare_kernel.sh
 	make -C $(kernel_headers) M=$(PWD) modules
 	#sudo insmod $(km_name).ko
-
+debug: all
+	ssh dev "rm -f $(PWD)/*"; scp *.h *.c *.ko dev:$(PWD)/
 clean:
 	make -C $(kernel_headers) M=$(PWD) clean
 	rm -f bind_test 2>/dev/null
