@@ -35,7 +35,7 @@ static int handler_pre(struct kprobe *p, struct pt_regs *regs) { // the `pt_regs
     unsigned short port;
     struct process_info p_info = get_process_info();
 
-		pr_info("%s (%d): mon_app_name = \"%s\", p_info.comm = \"%s\"\n", __FUNCTION__, __LINE__, mon_app_name, p_info.comm);
+        pr_info("%s (%d): mon_app_name = \"%s\", p_info.comm = \"%s\"\n", __FUNCTION__, __LINE__, mon_app_name, p_info.comm);
     if (strcmp(p_info.comm, mon_app_name) != 0) // Skip the following code if the current process is not the one we're interested in
         goto out;
 
@@ -55,7 +55,16 @@ static int handler_pre(struct kprobe *p, struct pt_regs *regs) { // the `pt_regs
     if (address.ss_family == AF_INET) {
         struct sockaddr_in *addr_in = (struct sockaddr_in *)&address;
         port = ntohs(addr_in->sin_port);
-        printk(KERN_INFO "Binding IPv4 (sockfd: %lu): %pI4:%u - PID: %d, Command: %s (%s)\n", sockfd, &addr_in->sin_addr.s_addr, port, p_info.pid, p_info.comm, p_info.cmdline); // You can set breakpoint here and output anything you want. However, in order not to trigger Oops, you have to: 1. delete the breakpoint. 2. Do NOT use "n" or "s", rather, you should use "c" to directly continue
+        /**
+         * You can set breakpoint here and output anything you want.
+         * However, in order not to trigger Oops, you have to:
+         * 1. delete the breakpoint
+         * 2. Do NOT use "n" or "s", rather, you should use "c" to directly continue
+         * The reason for this limitation might due to the fact that a lot of system-level
+         * applications will trigger this function, including "sudo",
+         * "systemd-udevd", "sshd", "cups-browsed", etc
+        **/
+        printk(KERN_INFO "Binding IPv4 (sockfd: %lu): %pI4:%u - PID: %d, Command: %s (%s)\n", sockfd, &addr_in->sin_addr.s_addr, port, p_info.pid, p_info.comm, p_info.cmdline);
     } else if (address.ss_family == AF_INET6) {
         struct sockaddr_in6 *addr_in6 = (struct sockaddr_in6 *)&address;
         port = ntohs(addr_in6->sin6_port);
