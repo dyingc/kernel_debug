@@ -14,6 +14,7 @@ Useful to find out what calls made by a kernel function
 Eg. 
 # echo vfs_read > set_graph_function
 # echo function_graph > current_tracer
+# echo > set_graph_function # to clean
 
 set_graph_notrace 
 
