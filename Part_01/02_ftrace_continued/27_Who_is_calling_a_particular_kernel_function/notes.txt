@@ -24,7 +24,7 @@ echo > trace
 echo 1 > tracing_on
 sleep 5
 echo 0 > tracing_on
-echo > set_ftrace_filter
+echo '!__x64_sys_read' > set_ftrace_filter
 echo 0 > options/func_stack_trace
 ```
 
@@ -62,6 +62,8 @@ echo function > current_tracer
 sleep 1
 
 echo 0 > tracing_on
+
+echo '!schedule' > set_ftrace_filter
 
 echo 0 > options/func_stack_trace
 
